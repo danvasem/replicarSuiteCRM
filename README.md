@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Vinco360
 
 This is a sample template for Vinco360 - Below is a brief explanation of what we have generated for you:
@@ -205,3 +206,7 @@ sam logs -n HelloWorldFunction --stack-name vinco360 --tail
 ```
 
 **NOTE**: Alternatively this could be part of package.json scripts section.
+=======
+# replicarSuiteCRM
+Proceso de replicación en línea a SuiteCRM
+>>>>>>> c9cc597dc9a7096d52170d9c2cfcfedd3ba329a8
