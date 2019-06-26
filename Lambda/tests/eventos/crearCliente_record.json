@@ -1,0 +1,42 @@
+{
+  "$type": "Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes",
+  "IdCliente": 503,
+  "IdNegocio": 0,
+  "Fecha": "2019-06-21T01:58:31.2645704+00:00",
+  "Cantidad": 1,
+  "ListaRegistros": [
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsCliente, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "NomUnicoCliente": "us-east-1:a36ecd11-cfaa-468a-9b35-e8de4aac7760",
+      "Nombre": "Daniel",
+      "Apellido": "Vaca",
+      "CodigoSexo": "1",
+      "FechaNacimiento": "2000-06-20T05:00:00+00:00",
+      "CodigoCiudad": "12",
+      "Direccion": "Villa club",
+      "TelefonoMovil": "0979784848",
+      "CorreoElectronico": "daniel.vaca@outlook.com",
+      "TipoDocumento": null,
+      "NumeroDocumento": null,
+      "CodigoPais": "1",
+      "FechaUltimaModificacion": "2019-06-21T01:58:31.265549+00:00",
+      "FechaCreacion": "2019-06-21T01:56:36+00:00",
+      "FechaRegistro": "2019-06-21T01:56:36+00:00",
+      "TipoLogin": "A",
+      "AppRegistro": "ANDROID",
+      "Estado": "A",
+      "IdEntidad": 0,
+      "IdRdsRegistro": 503,
+      "TipoOperacion": 1,
+      "RequiereActualizarId": true,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 1,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    }
+  ],
+  "TipoMensaje": 4,
+  "NumeroUnicoPaquete": null,
+  "OrdenPaquete": 0
+}

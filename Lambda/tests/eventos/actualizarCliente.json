@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:b90df25c-7a75-420a-b367-9a535bbabd77",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "34d17c70-2abd-5ab8-b880-29f6153cbda6",
+        "TopicArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL",
+        "Subject": null,
+        "Message": "{\"$type\":\"Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes\",\"IdCliente\":503,\"IdNegocio\":0,\"Fecha\":\"2019-06-21T02:13:20.409375+00:00\",\"Cantidad\":1,\"ListaRegistros\":[{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsCliente, Quantik.Vinco.Lambda.Comunes\",\"IdRdsRegistroChanged\":null,\"NomUnicoCliente\":null,\"Nombre\":\"Daniel\",\"Apellido\":\"Vaca Seminario\",\"CodigoSexo\":\"1\",\"FechaNacimiento\":\"2000-06-20T05:00:00+00:00\",\"CodigoCiudad\":\"12\",\"Direccion\":\"Villa club\",\"TelefonoMovil\":\"0979784848\",\"CorreoElectronico\":\"daniel.vaca@outlook.com\",\"TipoDocumento\":null,\"NumeroDocumento\":null,\"CodigoPais\":\"1\",\"FechaUltimaModificacion\":\"2019-06-21T02:13:20.422732+00:00\",\"IdEntidad\":0,\"IdRdsRegistro\":503,\"TipoOperacion\":2,\"RequiereActualizarId\":false,\"RequiereActualizarClavesForaneas\":false,\"TipoEntidad\":1,\"Procedimientos\":[],\"SentenciaExecute\":null}],\"TipoMensaje\":0,\"NumeroUnicoPaquete\":null,\"OrdenPaquete\":0}",
+        "Timestamp": "2019-06-21T02:13:21.091Z",
+        "SignatureVersion": "1",
+        "Signature": "h8wp8S3y1qbZouWr2xr9OkdZe2M1GjTnajrI28fJNDpH4vECsf67IBcjXQ8M5hws2EN5jpYQ8oUNmYvMEw9dH+FO3rGCjUzc5RzpeHEKzZthOc/VrL2KLWY8ws0ytwwhrchBzmH7I5Fy8+TTr0Zqob+zpdn0v5KD/9VJfmPFL8oSAZPyrT5k+dt9d+D0cmRBEEca8yg2VBDLIQZEiExJJ8otPNyUnL5ZYnjnEswE2ffek0uMEqwx2bg8FV/l4qgus9d41biayinIizO+0VFd6tr3yNbEk63CGtmSooWfn5t61twQ9GzOOfReRZ9PCElKllLd7fQq+KSJuubDVm5pgg==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-6aad65c2f9911b05cd53efda11f913f9.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:b90df25c-7a75-420a-b367-9a535bbabd77",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

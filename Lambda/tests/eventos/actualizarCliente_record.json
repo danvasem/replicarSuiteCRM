@@ -1,0 +1,37 @@
+{
+  "$type": "Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes",
+  "IdCliente": 503,
+  "IdNegocio": 0,
+  "Fecha": "2019-06-21T02:13:20.409375+00:00",
+  "Cantidad": 1,
+  "ListaRegistros": [
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsCliente, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "NomUnicoCliente": null,
+      "Nombre": "Daniel",
+      "Apellido": "Vaca Seminario",
+      "CodigoSexo": "1",
+      "FechaNacimiento": "2000-06-20T05:00:00+00:00",
+      "CodigoCiudad": "12",
+      "Direccion": "Villa club",
+      "TelefonoMovil": "0979784848",
+      "CorreoElectronico": "daniel.vaca@outlook.com",
+      "TipoDocumento": null,
+      "NumeroDocumento": null,
+      "CodigoPais": "1",
+      "FechaUltimaModificacion": "2019-06-21T02:13:20.422732+00:00",
+      "IdEntidad": 0,
+      "IdRdsRegistro": 503,
+      "TipoOperacion": 2,
+      "RequiereActualizarId": false,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 1,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    }
+  ],
+  "TipoMensaje": 0,
+  "NumeroUnicoPaquete": null,
+  "OrdenPaquete": 0
+}

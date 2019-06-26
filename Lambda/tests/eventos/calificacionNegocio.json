@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:b90df25c-7a75-420a-b367-9a535bbabd77",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "957f4c02-b5e0-5361-9567-198e046b35d8",
+        "TopicArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL",
+        "Subject": null,
+        "Message": "{\"$type\":\"Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes\",\"IdCliente\":503,\"IdNegocio\":2,\"Fecha\":\"2019-06-25T23:33:31.012223+00:00\",\"Cantidad\":2,\"ListaRegistros\":[{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClienteNegocio, Quantik.Vinco.Lambda.Comunes\",\"IdRdsRegistroChanged\":null,\"IdCliente\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":503,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"IdNegocio\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":2,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"IdStatusCliente\":null,\"FechaCreacion\":\"2019-06-25T23:33:31.013394+00:00\",\"Rating\":5,\"IdEntidad\":0,\"IdRdsRegistro\":null,\"TipoOperacion\":2,\"RequiereActualizarId\":false,\"RequiereActualizarClavesForaneas\":false,\"TipoEntidad\":13,\"Procedimientos\":[],\"SentenciaExecute\":null},{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClienteNegocio, Quantik.Vinco.Lambda.Comunes\",\"IdRdsRegistroChanged\":null,\"IdCliente\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":503,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"IdNegocio\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":2,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"IdStatusCliente\":null,\"FechaCreacion\":null,\"Rating\":5,\"IdEntidad\":1,\"IdRdsRegistro\":null,\"TipoOperacion\":5,\"RequiereActualizarId\":false,\"RequiereActualizarClavesForaneas\":false,\"TipoEntidad\":13,\"Procedimientos\":[],\"SentenciaExecute\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsSentenciaSQL, Quantik.Vinco.Lambda.Comunes\",\"ParametrosEntrada\":[{\"$type\":\"System.Tuple`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib\",\"Item1\":\"@IdCliente\",\"Item2\":503},{\"$type\":\"System.Tuple`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib\",\"Item1\":\"@IdNegocio\",\"Item2\":2},{\"$type\":\"System.Tuple`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib\",\"Item1\":\"@Fecha\",\"Item2\":\"2019-06-25T23:33:31.015038+00:00\"},{\"$type\":\"System.Tuple`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib\",\"Item1\":\"@Calificacion\",\"Item2\":5}],\"Sentencia\":\"insert into VC_ClienteNegocioCalificacion(IdCliente,IdNegocio,dFecha,iCalificacion) values(@IdCliente,@IdNegocio,@Fecha,@Calificacion);\"}}],\"TipoMensaje\":0,\"NumeroUnicoPaquete\":null,\"OrdenPaquete\":0}",
+        "Timestamp": "2019-06-25T23:33:31.836Z",
+        "SignatureVersion": "1",
+        "Signature": "eBmTCCJ2sGmhjxEZg0gueKjsYPOXh9ZSG0EmRXHPlP4v2sut2/51DiAyV+9LDr5I/bR6wfL723oqfnSkySIklXy4J8+5rdvuWrely2ugFsqcFpyURzymiEVuvw0DXPQthtIprQ/ikbXI2it4iLAekI41pLjGEqTa3lVnAHyavcaAsQSLrAsgl9tK+ToHVaQH9FsI0LJIT98kQZd19AQGe3//egJ3WBF4gcjkkY/HJ3xnyrH6ZO3vbVyd6x+I0txKJ88+6rCSBqAJEX1tMvkMdF4uzeHb0McDp6tCHQ9Ih8jx0sMc8GRkMAVFr2//xIpSrYuLzTKqRIVUca9i4MgBpA==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-6aad65c2f9911b05cd53efda11f913f9.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:b90df25c-7a75-420a-b367-9a535bbabd77",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "$type": "Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes",
+  "IdCliente": 503,
+  "IdNegocio": 2,
+  "Fecha": "2019-06-24T15:28:44.533574+00:00",
+  "Cantidad": 7,
+  "ListaRegistros": [
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsEvento, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "IdCliente": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 503,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdLocal": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 20,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdTipoEvento": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 3,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "NumeroUnico": "503-2-20-4555154",
+      "FechaCreacion": "2019-06-24T15:28:41.533587+00:00",
+      "Valor": 12,
+      "IdClienteResponsable": null,
+      "IdUsuarioResponsable": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 8,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "Estado": "A",
+      "TipoCodigoCliente": "E",
+      "CodigoCliente": "daniel.vaca@outlook.com",
+      "IdEntidad": 0,
+      "IdRdsRegistro": null,
+      "TipoOperacion": 1,
+      "RequiereActualizarId": true,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 8,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    },
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsCuenta, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "NumeroUnico": "503-2-1-2175819",
+      "IdCliente": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 503,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdNegocio": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 2,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdTipoCuenta": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 1,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "SaldoDisponible": 14,
+      "SaldoDisponibleBase": 14,
+      "FechaApertura": "2019-06-24T15:28:44.546654+00:00",
+      "FechaVigencia": "2019-06-24T15:28:44.546655+00:00",
+      "FechaExpiracion": "2119-06-24T15:28:44.546655+00:00",
+      "SaldoContable": 14,
+      "SaldoContableBase": 14,
+      "Estado": "A",
+      "IdEntidad": 1,
+      "IdRdsRegistro": null,
+      "TipoOperacion": 2,
+      "RequiereActualizarId": false,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 7,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    },
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsPartida, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "IdJuego": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 21,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdCliente": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 503,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdClienteAdmin": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 503,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "NumeroUnico": "503-2-6386360",
+      "ValorAlcanzado": 0.01,
+      "Progreso": 100,
+      "ValorCliente": 0.01,
+      "FechaCreacion": "2019-06-24T15:28:44.547005+00:00",
+      "FechaFin": "2019-06-24T15:28:44.547195+00:00",
+      "Estado": "I",
+      "Repeticion": 1,
+      "IdEntidad": 2,
+      "IdRdsRegistro": null,
+      "TipoOperacion": 1,
+      "RequiereActualizarId": true,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 6,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    },
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsMovPartida, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "IdPartida": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": null,
+        "IdEntidad": 2,
+        "PoseeClaveForanea": false
+      },
+      "IdEvento": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": null,
+        "IdEntidad": 0,
+        "PoseeClaveForanea": false
+      },
+      "IdCuenta": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": null,
+        "IdEntidad": 1,
+        "PoseeClaveForanea": false
+      },
+      "IdCliente": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 503,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdNegocio": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 2,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdLocal": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 20,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdCampania": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 21,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdJuego": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 21,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdReglaJuego": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 21,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "Valor": 0.01,
+      "ValorCuenta": null,
+      "Estado": "A",
+      "Tipo": "P",
+      "FechaCreacion": "2019-06-24T15:28:44.547108+00:00",
+      "FechaExpiracion": "2020-06-24T15:28:44.547108+00:00",
+      "NumeroUnicoPartida": "503-2-6386360",
+      "TipoJuego": 200,
+      "FechaFinPartida": null,
+      "IdEntidad": 3,
+      "IdRdsRegistro": null,
+      "TipoOperacion": 1,
+      "RequiereActualizarId": true,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 14,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    },
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsMovPartida, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "IdPartida": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": null,
+        "IdEntidad": 2,
+        "PoseeClaveForanea": false
+      },
+      "IdEvento": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": null,
+        "IdEntidad": 0,
+        "PoseeClaveForanea": false
+      },
+      "IdCuenta": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": null,
+        "IdEntidad": 1,
+        "PoseeClaveForanea": false
+      },
+      "IdCliente": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 503,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdNegocio": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 2,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdLocal": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 20,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdCampania": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 21,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdJuego": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 21,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdReglaJuego": null,
+      "Valor": null,
+      "ValorCuenta": 10,
+      "Estado": "A",
+      "Tipo": "C",
+      "FechaCreacion": "2019-06-24T15:28:44.547189+00:00",
+      "FechaExpiracion": "2020-06-24T15:28:44.547189+00:00",
+      "NumeroUnicoPartida": "503-2-6386360",
+      "TipoJuego": 200,
+      "FechaFinPartida": null,
+      "IdEntidad": 4,
+      "IdRdsRegistro": null,
+      "TipoOperacion": 1,
+      "RequiereActualizarId": true,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 14,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    },
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsMovIngresoCuenta, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "IdCuenta": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": null,
+        "IdEntidad": 1,
+        "PoseeClaveForanea": false
+      },
+      "IdEvento": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": null,
+        "IdEntidad": 0,
+        "PoseeClaveForanea": false
+      },
+      "NumeroUnicoCuenta": "503-2-1-2175819",
+      "Valor": 10,
+      "ValorBase": 10,
+      "Estado": "A",
+      "FechaCreacion": "2019-06-24T15:28:44.547194+00:00",
+      "FechaExpiracion": "2020-06-24T15:28:44.547194+00:00",
+      "Saldo": 10,
+      "SaldoBase": 10,
+      "IdEntidad": 5,
+      "IdRdsRegistro": null,
+      "TipoOperacion": 1,
+      "RequiereActualizarId": true,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 15,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    },
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsMovPartida, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "IdPartida": null,
+      "IdEvento": null,
+      "IdCuenta": null,
+      "IdCliente": null,
+      "IdNegocio": null,
+      "IdLocal": null,
+      "IdCampania": null,
+      "IdJuego": null,
+      "IdReglaJuego": null,
+      "Valor": null,
+      "ValorCuenta": null,
+      "Estado": null,
+      "Tipo": null,
+      "FechaCreacion": null,
+      "FechaExpiracion": null,
+      "NumeroUnicoPartida": null,
+      "TipoJuego": null,
+      "FechaFinPartida": null,
+      "IdEntidad": 6,
+      "IdRdsRegistro": null,
+      "TipoOperacion": 5,
+      "RequiereActualizarId": false,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 14,
+      "Procedimientos": [],
+      "SentenciaExecute": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsSentenciaSQL, Quantik.Vinco.Lambda.Comunes",
+        "ParametrosEntrada": [
+          {
+            "$type": "System.Tuple`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib",
+            "Item1": "@NumeroUnicoPartida",
+            "Item2": "503-2-6386360"
+          },
+          {
+            "$type": "System.Tuple`2[[System.String, System.Private.CoreLib],[System.Object, System.Private.CoreLib]], System.Private.CoreLib",
+            "Item1": "@FechaFinPartida",
+            "Item2": "2019-06-24T15:28:44.547195+00:00"
+          }
+        ],
+        "Sentencia": "UPDATE VC_MovPartida set dFechaFinPartida=@FechaFinPartida where sNumeroUnicoPartida=@NumeroUnicoPartida"
+      }
+    }
+  ],
+  "TipoMensaje": 0,
+  "NumeroUnicoPaquete": null,
+  "OrdenPaquete": 0
+}
