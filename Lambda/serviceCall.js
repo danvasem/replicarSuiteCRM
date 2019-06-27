@@ -178,7 +178,8 @@ const legacyLogin = async () => {
       res.on("end", () => {
         try {
           body = JSON.parse(body);
-          resolve(body.id);
+          SESSION_ID = body.id;
+          resolve(SESSION_ID);
         } catch (ex) {
           reject(ex);
         }

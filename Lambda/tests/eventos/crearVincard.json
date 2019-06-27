@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:b90df25c-7a75-420a-b367-9a535bbabd77",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "8057e7e8-dd04-5f36-bd86-b266d2152f40",
+        "TopicArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL",
+        "Subject": null,
+        "Message": "{\"$type\":\"Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes\",\"IdCliente\":1,\"IdNegocio\":2,\"Fecha\":\"2019-06-26T19:24:49.0575628-05:00\",\"Cantidad\":1,\"ListaRegistros\":[{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsCodigoCliente, Quantik.Vinco.Lambda.Comunes\",\"IdRdsRegistroChanged\":null,\"Codigo\":\"4882047417\",\"IdCliente\":null,\"IdNegocio\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":2,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"IdLocal\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":20,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"FechaCreacion\":\"2019-06-27T00:24:49.0575806Z\",\"FechaActivacion\":null,\"FechaEntrega\":null,\"Estado\":\"G\",\"IdEntidad\":0,\"IdRdsRegistro\":null,\"TipoOperacion\":1,\"RequiereActualizarId\":true,\"RequiereActualizarClavesForaneas\":false,\"TipoEntidad\":0,\"Procedimientos\":[],\"SentenciaExecute\":null}],\"TipoMensaje\":0,\"NumeroUnicoPaquete\":null,\"OrdenPaquete\":0}",
+        "Timestamp": "2019-06-27T00:24:49.200Z",
+        "SignatureVersion": "1",
+        "Signature": "dkgbAl3hR53FOCHcKHbb1C8ZU9ReCqofXY+CPgS+sNiGyvmc0zt/WMUyov7khg1bLNwfC32UzVg3N/8l/61tc9crGLuZPealSZdgev3ATkU0L47NEduZ+Zs50fcZpH7HGuBcqL5tgFdBgzT03/FVCMQLsPgutGM8d5S6UgSx47VtP3XwPP1IjhdGqX8+kx/oW5zBotiZw6uAZKMrB5Bh901t8gz64VcUV6jvNeXwWgrspfhO4O4W2I0YOr7eBG/6TKUcVrnz7yq0e7+qP3IB5iMJCXUNxqySD9Cb4aegKN7VgAFXkSkpZwzErkmQK8iOW7Iw7GizJAtoh12J/0DrLA==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-6aad65c2f9911b05cd53efda11f913f9.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:b90df25c-7a75-420a-b367-9a535bbabd77",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

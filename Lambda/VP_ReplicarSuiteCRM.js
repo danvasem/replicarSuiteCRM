@@ -15,6 +15,7 @@ const { crearCliente, actualizarCliente, crearClienteNegocio, crearCalificacionN
 const { registrarAcumulacion, registrarAfiliacion, registrarRedencion } = require("./eventos");
 const { crearCuenta, actualizarCuenta } = require("./cuenta");
 const { crearPartida, actualizarPartida } = require("./partida");
+const { crearCodigoCliente, actualizarCodigoCliente } = require("./vincard");
 
 const TIPO_EVENTO_ACUMULACION = 1;
 const TIPO_EVENTO_AFILIACION = 3;
@@ -33,7 +34,7 @@ exports.lambdaHandler = async (event, context) => {
         X => X.$type.includes("RDS.RdsEvento") && X.IdTipoEvento.IdClaveForanea === TIPO_EVENTO_AFILIACION
       )
     ) {
-      await sleep(2000);
+      await sleep(3000);
     }
     /**************************************************** */
 
@@ -87,10 +88,10 @@ exports.lambdaHandler = async (event, context) => {
         } else if (record.$type.includes("RDS.RdsCuenta")) {
           switch (record.TipoOperacion) {
             case 1:
-              await crearCuenta(record);
+              res = await crearCuenta(record);
               break;
             case 2:
-              await actualizarCuenta(record);
+              res = await actualizarCuenta(record);
               break;
           }
         } else if (record.$type.includes("RDS.RdsPartida")) {
@@ -103,11 +104,20 @@ exports.lambdaHandler = async (event, context) => {
                   X => X.$type.includes("RDS.RdsMovPartida") && X.IdCampania != null
                 );
                 const idCampania = campania ? campania.IdCampania.IdClaveForanea : null;
-                await crearPartida(record, evento, idCampania);
+                res = await crearPartida(record, evento, idCampania);
               }
               break;
             case 2:
-              await actualizarPartida(record);
+              res = await actualizarPartida(record);
+              break;
+          }
+        } else if (record.$type.includes("RDS.RdsCodigoCliente")) {
+          switch (record.TipoOperacion) {
+            case 1:
+              res = await crearCodigoCliente(record);
+              break;
+            case 2:
+              res = await actualizarCodigoCliente(record);
               break;
           }
         }

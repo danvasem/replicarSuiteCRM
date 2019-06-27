@@ -54,6 +54,29 @@ const crearRelacion = async ({ moduloDer, moduloIzq, idDer, idIzq }) => {
   }
 };
 
+const legacyCrearRelacion = async ({ modulo, moduloId, nombreRelacion, relatedId }) => {
+  try {
+    const relationData = JSON.stringify({
+      session: await legacyLogin(),
+      module_name: modulo,
+      module_id: moduloId,
+      link_field_name: nombreRelacion,
+      related_ids: [relatedId],
+      name_value_list: [],
+      delete: 0 //0: create   1: delete
+    });
+    const record = await legacyServiceCall({
+      method: "set_relationship",
+      argumentList: relationData
+    });
+
+    return record;
+  } catch (ex) {
+    console.log(`Error al crear relación de ${modulo} - ${nombreRelacion}:   ${ex.message}`);
+    throw ex;
+  }
+};
+
 const obtenerModulo = async ({
   modulo,
   id = null,
@@ -180,5 +203,6 @@ module.exports = {
   obtenerIdLocal,
   obtenerIdNegocio,
   obtenerIdNegocioIdLocal,
-  obtenerIdTipoEvento
+  obtenerIdTipoEvento,
+  legacyCrearRelacion
 };

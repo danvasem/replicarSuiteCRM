@@ -1,0 +1,47 @@
+{
+  "$type": "Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes",
+  "IdCliente": 503,
+  "IdNegocio": 4,
+  "Fecha": "2019-06-27T00:52:26.632306+00:00",
+  "Cantidad": 1,
+  "ListaRegistros": [
+    {
+      "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsCodigoCliente, Quantik.Vinco.Lambda.Comunes",
+      "IdRdsRegistroChanged": null,
+      "Codigo": "4882047417",
+      "IdCliente": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 503,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdNegocio": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 4,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "IdLocal": {
+        "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+        "IdClaveForanea": 40,
+        "IdEntidad": null,
+        "PoseeClaveForanea": true
+      },
+      "FechaCreacion": null,
+      "FechaActivacion": "2019-06-27T00:52:25",
+      "FechaEntrega": null,
+      "Estado": "A",
+      "IdEntidad": 0,
+      "IdRdsRegistro": null,
+      "TipoOperacion": 2,
+      "RequiereActualizarId": false,
+      "RequiereActualizarClavesForaneas": false,
+      "TipoEntidad": 0,
+      "Procedimientos": [],
+      "SentenciaExecute": null
+    }
+  ],
+  "TipoMensaje": 4,
+  "NumeroUnicoPaquete": null,
+  "OrdenPaquete": 0
+}

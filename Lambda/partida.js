@@ -4,9 +4,8 @@ const {
   obtenerIdCliente,
   obtenerIdLocal,
   obtenerIdNegocioIdLocal,
-  obtenerIdNegocio,
-  obtenerIdTipoEvento,
-  obtenerModulo
+  obtenerModulo,
+  actualizarModulo
 } = require("./helper");
 const { formatSuiteCRMDateTime } = require("./helper");
 
@@ -91,8 +90,8 @@ const actualizarPartida = async record => {
           progreso_c: record.Progreso,
           valor_cliente_c: record.ValorCliente,
           fecha_fin_c: record.FechaFin ? formatSuiteCRMDateTime(record.FechaFin) : null,
-          estado_c: evento.Estado,
-          repeticion_c: evento.Repeticion
+          estado_c: record.Estado,
+          repeticion_c: record.Repeticion
         }
       }
     });
