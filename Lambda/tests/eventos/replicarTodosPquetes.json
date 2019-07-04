@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:44b56ab4-3829-47ca-9ae5-fdf87b26918f",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Message": "{\"$type\":\"Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes\",\"TipoMensaje\":1}",
+        "MessageAttributes": {},
+        "MessageId": "55be462c-d2b9-534a-b5bb-1554e9f8045d",
+        "Signature": "y9heTEwQTX/AQCnAKQDFgazwO+yC/Zd/xROR0E+FQD3iRSVvEFV/TdwVv3Tv8r7a/xfcLLneda0YWkT+5jgXNttvm/BNxXaJwD72qbHFftonIm7SRJu74tbrrmjM9DaIps5wCp+6ttQBlU4HdLzxihCZnc3qwjrNCOrvX76wr80PHOLwEVJDZI4CCndxpokPbLEFTMbJyTN4+iLCVRw9wj5kUSw2qliH/q6Zov2XudsOo6uPYBiqHQ5iq22Hj2pqijeuvMmOMPd/6NppkXG3vbfj7G1C/QERktkQTbVDIKz2SFNM6LWRi9fyezej2UuFdO4rl4BvoenhoN63S73K0w==",
+        "SignatureVersion": "1",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-eaea6120e66ea12e88dcd8bcbddca752.pem",
+        "Subject": null,
+        "Timestamp": "2018-05-18T02:22:57.454Z",
+        "TopicArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL",
+        "Type": "Notification",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:44b56ab4-3829-47ca-9ae5-fdf87b26918f"
+      }
+    }
+  ]
+}

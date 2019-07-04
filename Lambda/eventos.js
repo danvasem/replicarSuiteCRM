@@ -6,7 +6,8 @@ const {
   obtenerIdNegocioIdLocal,
   obtenerIdNegocio,
   obtenerIdTipoEvento,
-  obtenerModulo
+  obtenerModulo,
+  obtenerIdCodigoCliente
 } = require("./helper");
 const { formatSuiteCRMDateTime } = require("./helper");
 
@@ -21,6 +22,10 @@ const registrarAcumulacion = async (record, campania = null) => {
     const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
     const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
     const idTipoEvento = await obtenerIdTipoEvento(record.IdTipoEvento.IdClaveForanea);
+    let idCodigoCliente = null;
+    if (record.TipoCodigoCliente === "C" && record.CodigoCliente) {
+      idCodigoCliente = await obtenerIdCodigoCliente(record.CodigoCliente);
+    }
     let idCampania = null;
     if (campania != null) {
       idCampania = (await obtenerModulo({
@@ -53,7 +58,6 @@ const registrarAcumulacion = async (record, campania = null) => {
           qtk_campania_id_c: idCampania,
           puntos_ganados_c: puntosGanados,
           estrellas_ganados_c: estrellasGanadas
-          //vincard
         }
       }
     });
@@ -88,7 +92,14 @@ const registrarAcumulacion = async (record, campania = null) => {
       idIzq: acumulacion.data.id
     });
 
-    //PENDIENTE: Vincard
+    if (idCodigoCliente) {
+      response = await crearRelacion({
+        moduloDer: "qtk_codigo_cliente",
+        moduloIzq: "qtk_acumulacion",
+        idDer: idCodigoCliente,
+        idIzq: acumulacion.data.id
+      });
+    }
 
     return response;
   } catch (ex) {
@@ -108,6 +119,10 @@ const registrarAfiliacion = async (record, campania = null) => {
     const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
     const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
     const idTipoEvento = await obtenerIdTipoEvento(record.IdTipoEvento.IdClaveForanea);
+    let idCodigoCliente = null;
+    if (record.TipoCodigoCliente === "C" && record.CodigoCliente) {
+      idCodigoCliente = await obtenerIdCodigoCliente(record.CodigoCliente);
+    }
     let idCampania = null;
     if (campania != null) {
       idCampania = (await obtenerModulo({
@@ -140,7 +155,6 @@ const registrarAfiliacion = async (record, campania = null) => {
           qtk_campania_id_c: idCampania,
           puntos_ganados_c: puntosGanados,
           estrellas_ganados_c: estrellasGanadas
-          //vincard
         }
       }
     });
@@ -175,7 +189,14 @@ const registrarAfiliacion = async (record, campania = null) => {
       idIzq: afiliacion.data.id
     });
 
-    //PENDIENTE: Vincard
+    if (idCodigoCliente) {
+      response = await crearRelacion({
+        moduloDer: "qtk_codigo_cliente",
+        moduloIzq: "qtk_afiliacion",
+        idDer: idCodigoCliente,
+        idIzq: afiliacion.data.id
+      });
+    }
 
     return response;
   } catch (ex) {
@@ -195,6 +216,10 @@ const registrarRedencion = async (record, evento, cuenta) => {
     const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
     const idNegocio = await obtenerIdNegocio(record.IdNegocio.IdClaveForanea);
     const idTipoEvento = await obtenerIdTipoEvento(evento.IdTipoEvento.IdClaveForanea);
+    let idCodigoCliente = null;
+    if (evento.TipoCodigoCliente === "C" && evento.CodigoCliente) {
+      idCodigoCliente = await obtenerIdCodigoCliente(evento.CodigoCliente);
+    }
     const idPremio = (await obtenerModulo({
       modulo: "qtk_premio",
       id: record.IdPremio.IdClaveForanea,
@@ -264,7 +289,14 @@ const registrarRedencion = async (record, evento, cuenta) => {
       idIzq: redencion.data.id
     });
 
-    //PENDIENTE: Vincard
+    if (idCodigoCliente) {
+      response = await crearRelacion({
+        moduloDer: "qtk_codigo_cliente",
+        moduloIzq: "qtk_redencion",
+        idDer: idCodigoCliente,
+        idIzq: redencion.data.id
+      });
+    }
 
     return response;
   } catch (ex) {

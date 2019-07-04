@@ -15,7 +15,7 @@ const crearCliente = async record => {
         attributes: {
           nombre_unico_c: record.NomUnicoCliente,
           id_cliente_c: record.IdRdsRegistro,
-          first_name: record.Nombre,
+          first_name: record.Nombre ? record.Nombre : record.CorreoElectronico,
           last_name: record.Apellido,
           sexo_c: record.CodigoSexo,
           birthdate: formatSuiteCRMDate(record.FechaNacimiento),
@@ -65,6 +65,7 @@ const actualizarCliente = async record => {
         type: "Contacts",
         id: contactId,
         attributes: {
+          name: record.Nombre ? `${record.Nombre} ${record.Apellido}` : record.CorreoElectronico,
           first_name: record.Nombre,
           last_name: record.Apellido,
           sexo_c: record.CodigoSexo,

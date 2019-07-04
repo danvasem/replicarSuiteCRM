@@ -191,6 +191,19 @@ const obtenerIdTipoEvento = async idTipoEvento => {
   }
 };
 
+const obtenerIdCodigoCliente = async codigo => {
+  try {
+    return (await obtenerModulo({
+      modulo: "qtk_codigo_cliente",
+      nomUnico: codigo,
+      campoNomUnico: "codigo_c"
+    })).id;
+  } catch (ex) {
+    console.log(`No se encontró Código Cliente con código ${codigo}`);
+    throw ex;
+  }
+};
+
 module.exports = {
   formatSuiteCRMDateTime,
   formatSuiteCRMDate,
@@ -204,5 +217,6 @@ module.exports = {
   obtenerIdNegocio,
   obtenerIdNegocioIdLocal,
   obtenerIdTipoEvento,
-  legacyCrearRelacion
+  legacyCrearRelacion,
+  obtenerIdCodigoCliente
 };

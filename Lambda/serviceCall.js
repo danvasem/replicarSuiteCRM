@@ -24,7 +24,7 @@ const serviceCall = async ({ path, postData, jsonEncoded = true, method = "POST"
     const req = https.request(options, function(res) {
       let body = "";
       console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+      //console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       res.setEncoding("utf8");
       res.on("data", chunk => {
         body += chunk;
@@ -44,7 +44,7 @@ const serviceCall = async ({ path, postData, jsonEncoded = true, method = "POST"
       reject(e);
     });
 
-    console.log("PostData: " + postData);
+    //console.log("PostData: " + postData);
     req.write(postData);
     req.end();
   });
@@ -111,7 +111,7 @@ const legacyServiceCall = async ({ method, argumentList }) => {
     const req = https.request(options, function(res) {
       let body = "";
       console.log(`STATUS: ${res.statusCode}`);
-      console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+      //console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       res.setEncoding("utf8");
       res.on("data", chunk => {
         body += chunk;
@@ -131,7 +131,7 @@ const legacyServiceCall = async ({ method, argumentList }) => {
       reject(e);
     });
 
-    console.log("PostData: " + postData);
+    //console.log("PostData: " + postData);
     req.write(postData);
     req.end();
   });
