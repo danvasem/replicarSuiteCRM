@@ -7,7 +7,9 @@ const {
   obtenerIdNegocio,
   obtenerIdTipoEvento,
   obtenerModulo,
-  obtenerIdCodigoCliente
+  obtenerIdCodigoCliente,
+  eliminarModulo,
+  obtenerRelacionesModulo
 } = require("./helper");
 const { formatSuiteCRMDateTime } = require("./helper");
 
@@ -305,4 +307,155 @@ const registrarRedencion = async (record, evento, cuenta) => {
   }
 };
 
-module.exports = { registrarAcumulacion, registrarAfiliacion, registrarRedencion };
+/**
+ * Elimina un registro de Evento en SuiteCRM
+ * @param {object} record Objeto a eliminar
+ * @returns {string} Respuesta de SuiteCRM
+ */
+const eliminarEvento = async record => {
+  try {
+    //Obtenemos le id del módulo
+    let modulo = null;
+    switch (record.IdTipoEvento.IdClaveForanea) {
+      case 1:
+        modulo = "qtk_acumulacion";
+        break;
+      case 2:
+        modulo = "qtk_redencion";
+        break;
+      case 3:
+        modulo = "qtk_afiliacion";
+        break;
+    }
+    const idModulo = (await obtenerModulo({
+      modulo: modulo,
+      nomUnico: record.NumeroUnico,
+      campoNomUnico: "numero_unico_c"
+    })).id;
+
+    response = await eliminarModulo({ modulo, idModulo });
+
+    return response;
+  } catch (ex) {
+    console.log(`Error en eliminar evento ${modulo}: ${ex.message}`);
+    throw ex;
+  }
+};
+
+/**
+ * Registra un evento de Reverso en SuiteCRM
+ * @param {string} record Datos del registro
+ * @returns {string} Respuesta de SuiteCRM
+ */
+const registrarReverso = async (record, evento) => {
+  try {
+    const idCliente = await obtenerIdCliente(record.IdCliente.IdClaveForanea);
+    const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
+    const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
+    const idTipoEvento = await obtenerIdTipoEvento(record.IdTipoEvento.IdClaveForanea);
+    const idTipoEventoReversado = await obtenerIdTipoEvento(evento.IdTipoEvento.IdClaveForanea);
+
+    //Obtenemos el evento original
+    let modulo = "";
+    let idPremio = null;
+    let nombreCampoFechaCreacion = null;
+    switch (evento.IdTipoEvento.IdClaveForanea) {
+      case 1:
+        {
+          modulo = "qtk_acumulacion";
+          nombreCampoFechaCreacion = "fecha_acumulacion_c";
+        }
+        break;
+      case 2:
+        {
+          modulo = "qtk_redencion";
+          nombreCampoFechaCreacion = "fecha_redencion_c";
+        }
+        break;
+      case 3:
+        {
+          modulo = "qtk_afiliacion";
+          nombreCampoFechaCreacion = "fecha_afiliacion_c";
+        }
+        break;
+      case 5:
+        {
+          modulo = "qtk_cupon_juego";
+          nombreCampoFechaCreacion = "fecha_canje_cupon_c";
+        }
+        break;
+    }
+    const moduloEvento = await obtenerModulo({
+      modulo,
+      campos: [nombreCampoFechaCreacion, "valor_c"],
+      nomUnico: evento.NumeroUnico,
+      campoNomUnico: "numero_unico_c"
+    });
+
+    //En el caso de redención, debemon obtener el Id del premio
+    if (evento.IdTipoEvento.IdClaveForanea === 2) {
+      const premio = await obtenerRelacionesModulo({
+        modulo: "qtk_redencion",
+        id: moduloEvento.id,
+        nombreRelacion: "qtk_premio_qtk_redencion_1"
+      });
+      idPremio = premio.data[0].id;
+    }
+
+    const postData = JSON.stringify({
+      data: {
+        type: "qtk_reverso",
+        attributes: {
+          name: record.NumeroUnico,
+          numero_unico_c: record.NumeroUnico,
+          qtk_tipo_evento_id_c: idTipoEvento,
+          fecha_reverso_c: formatSuiteCRMDateTime(record.FechaCreacion),
+          //usuario_responsable
+          estado_c: record.Estado,
+          qtk_tipo_evento_id1_c: idTipoEventoReversado,
+          reverso_valor_c: moduloEvento.name_value_list.valor_c.value,
+          reverso_fecha_c: formatSuiteCRMDateTime(moduloEvento.name_value_list[nombreCampoFechaCreacion].value),
+          reverso_numero_c: evento.NumeroUnico,
+          qtk_premio_id_c: idPremio
+        }
+      }
+    });
+
+    //Procedemos a crear la acumulacion
+    const reverso = await crearModulo({
+      modulo: "qtk_reverso",
+      postData
+    });
+
+    //Procedemos a crear la relación con el Cliente
+    let response = await crearRelacion({
+      moduloDer: "Contacts",
+      moduloIzq: "qtk_reverso",
+      idDer: idCliente,
+      idIzq: reverso.data.id
+    });
+
+    //Procedemos a crear la relación con el Local
+    response = await crearRelacion({
+      moduloDer: "qtk_local",
+      moduloIzq: "qtk_reverso",
+      idDer: idLocal,
+      idIzq: reverso.data.id
+    });
+
+    //Procedemos a crear la relación con el Negocio
+    response = await crearRelacion({
+      moduloDer: "qtk_negocio",
+      moduloIzq: "qtk_reverso",
+      idDer: idNegocio,
+      idIzq: reverso.data.id
+    });
+
+    return response;
+  } catch (ex) {
+    console.log("Error en registrar Reverso: " + ex.message);
+    throw ex;
+  }
+};
+
+module.exports = { registrarAcumulacion, registrarAfiliacion, registrarRedencion, eliminarEvento, registrarReverso };

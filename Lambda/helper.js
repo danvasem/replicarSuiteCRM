@@ -204,6 +204,20 @@ const obtenerIdCodigoCliente = async codigo => {
   }
 };
 
+const eliminarModulo = async ({ modulo, idModulo }) => {
+  try {
+    const response = await serviceCall({
+      path: `/Api/V8/module/${modulo}/${idModulo}`,
+      postData: JSON.stringify({ data: "" }),
+      method: "DELETE"
+    });
+    return response;
+  } catch (ex) {
+    console.log(`Error en Eliminar Módulo ${modulo} con Id ${idModulo}: ${ex.message}`);
+    throw ex;
+  }
+};
+
 module.exports = {
   formatSuiteCRMDateTime,
   formatSuiteCRMDate,
@@ -218,5 +232,6 @@ module.exports = {
   obtenerIdNegocioIdLocal,
   obtenerIdTipoEvento,
   legacyCrearRelacion,
-  obtenerIdCodigoCliente
+  obtenerIdCodigoCliente,
+  eliminarModulo
 };

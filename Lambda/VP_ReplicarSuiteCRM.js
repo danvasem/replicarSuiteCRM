@@ -14,14 +14,26 @@
 const AWS = require("aws-sdk");
 const dynamodb = new AWS.DynamoDB();
 const { crearCliente, actualizarCliente, crearClienteNegocio, crearCalificacionNegocio } = require("./cliente");
-const { registrarAcumulacion, registrarAfiliacion, registrarRedencion } = require("./eventos");
+const {
+  registrarAcumulacion,
+  registrarAfiliacion,
+  registrarRedencion,
+  eliminarEvento,
+  registrarReverso
+} = require("./eventos");
 const { crearCuenta, actualizarCuenta } = require("./cuenta");
-const { crearPartida, actualizarPartida } = require("./partida");
+const { crearPartida, actualizarPartida, eliminarPartida } = require("./partida");
 const { crearCodigoCliente, actualizarCodigoCliente } = require("./vincard");
 
 const TIPO_EVENTO_ACUMULACION = 1;
 const TIPO_EVENTO_AFILIACION = 3;
 const TIPO_EVENTO_REDENCION = 2;
+const TIPO_EVENTO_REVERSO = 4;
+
+const TIPO_OPERACION_INSERT = 1;
+const TIPO_OPERACION_UPDATE = 2;
+const TIPO_OPERACION_DELETE = 3;
+const TIPO_OPERACION_NINGUNO = 4;
 
 const TIPO_PAQUETE_SUITECRM = 2;
 const TIPO_MENSAJE_REPLICAR_TODOS_PAQUETES = 1;
@@ -67,35 +79,66 @@ exports.lambdaHandler = async (event, context) => {
  * @returns {bool} True si la ejecución fue correcta
  */
 const ejecutarPaquete = async (data, event = null) => {
+  let contadorPaquete = 0;
   try {
-    for (let i = 0; i < data.ListaRegistros.length; i++) {
-      let record = data.ListaRegistros[i];
+    for (contadorPaquete = 0; contadorPaquete < data.ListaRegistros.length; contadorPaquete++) {
+      let record = data.ListaRegistros[contadorPaquete];
       if (record.$type.includes("RDS.RdsClienteNegocio")) {
         switch (record.TipoOperacion) {
-          case 1:
+          case TIPO_OPERACION_INSERT:
             await crearClienteNegocio(record);
-          case 2: {
-            if (record.Rating) await crearCalificacionNegocio(record);
-          }
+            break;
+          case TIPO_OPERACION_UPDATE:
+            {
+              if (record.Rating) await crearCalificacionNegocio(record);
+            }
+            break;
         }
       } else if (record.$type.includes("RDS.RdsCliente")) {
         switch (record.TipoOperacion) {
-          case 1: {
-            await crearCliente(record);
-          }
-          case 2: {
-            await actualizarCliente(record);
-          }
+          case TIPO_OPERACION_INSERT:
+            {
+              await crearCliente(record);
+            }
+            break;
+          case TIPO_OPERACION_UPDATE:
+            {
+              await actualizarCliente(record);
+            }
+            break;
         }
       } else if (record.$type.includes("RDS.RdsEvento")) {
-        //Obtenemos la campania relacionada, NOTA: Esto es una simplificación que evita multiples-campañas
-        const campania = data.ListaRegistros.find(X => X.$type.includes("RDS.RdsMovPartida") && X.IdCampania != null);
-        const idCampania = campania ? campania.IdCampania.IdClaveForanea : null;
-        switch (record.IdTipoEvento.IdClaveForanea) {
-          case TIPO_EVENTO_ACUMULACION:
-            await registrarAcumulacion(record, idCampania);
-          case TIPO_EVENTO_AFILIACION:
-            await registrarAfiliacion(record, idCampania);
+        switch (record.TipoOperacion) {
+          case TIPO_OPERACION_INSERT:
+            {
+              //Obtenemos la campania relacionada, NOTA: Esto es una simplificación que evita multiples-campañas
+              const campania = data.ListaRegistros.find(
+                X => X.$type.includes("RDS.RdsMovPartida") && X.IdCampania != null
+              );
+              const idCampania = campania ? campania.IdCampania.IdClaveForanea : null;
+              switch (record.IdTipoEvento.IdClaveForanea) {
+                case TIPO_EVENTO_ACUMULACION:
+                  await registrarAcumulacion(record, idCampania);
+                  break;
+                case TIPO_EVENTO_AFILIACION:
+                  await registrarAfiliacion(record, idCampania);
+                  break;
+                case TIPO_EVENTO_REVERSO: {
+                  //Obtenemos el evento reversado
+                  const evento = data.ListaRegistros.find(
+                    X => X.$type.includes("RDS.RdsEvento") && X.IdTipoEvento.IdClaveForanea !== TIPO_EVENTO_REVERSO
+                  );
+                  await registrarReverso(record, evento);
+                  break;
+                }
+              }
+            }
+            break;
+          case TIPO_OPERACION_DELETE:
+            {
+              await eliminarEvento(record);
+            }
+            break;
         }
       } else if (record.$type.includes("RDS.RdsRedencion")) {
         //obtenemos el elemento del evento
@@ -108,37 +151,47 @@ const ejecutarPaquete = async (data, event = null) => {
         await registrarRedencion(record, evento, cuenta);
       } else if (record.$type.includes("RDS.RdsCuenta")) {
         switch (record.TipoOperacion) {
-          case 1:
+          case TIPO_OPERACION_INSERT:
             await crearCuenta(record);
-          case 2:
+            break;
+          case TIPO_OPERACION_UPDATE:
             await actualizarCuenta(record);
+            break;
         }
       } else if (record.$type.includes("RDS.RdsPartida")) {
         switch (record.TipoOperacion) {
-          case 1: {
-            const evento = data.ListaRegistros.find(X => X.$type.includes("RDS.RdsEvento"));
-            //Obtenemos la campania relacionada, NOTA: Esto es una simplificación que evita multiples-campañas
-            const campania = data.ListaRegistros.find(
-              X => X.$type.includes("RDS.RdsMovPartida") && X.IdCampania != null
-            );
-            const idCampania = campania ? campania.IdCampania.IdClaveForanea : null;
-            await crearPartida(record, evento, idCampania);
-          }
-          case 2:
+          case TIPO_OPERACION_INSERT:
+            {
+              const evento = data.ListaRegistros.find(X => X.$type.includes("RDS.RdsEvento"));
+              //Obtenemos la campania relacionada, NOTA: Esto es una simplificación que evita multiples-campañas
+              const campania = data.ListaRegistros.find(
+                X => X.$type.includes("RDS.RdsMovPartida") && X.IdCampania != null
+              );
+              const idCampania = campania ? campania.IdCampania.IdClaveForanea : null;
+              await crearPartida(record, evento, idCampania);
+            }
+            break;
+          case TIPO_OPERACION_UPDATE:
             await actualizarPartida(record);
+            break;
+          case TIPO_OPERACION_DELETE:
+            await eliminarPartida(record.NumeroUnico);
+            break;
         }
       } else if (record.$type.includes("RDS.RdsCodigoCliente")) {
         switch (record.TipoOperacion) {
-          case 1:
+          case TIPO_OPERACION_INSERT:
             await crearCodigoCliente(record);
-          case 2:
+            break;
+          case TIPO_OPERACION_UPDATE:
             await actualizarCodigoCliente(record);
+            break;
         }
       }
     }
     return true;
   } catch (err) {
-    console.log("Error en Ejecuar Paquete: " + err.message);
+    console.log("Error en Ejecutar Paquete: " + err.message);
     if (event) await registarPaqueteTablaTemporal(event, data, err.message);
     return false; //Se indica que el paquete dió error y se almacenó en VP_PaqueteRDS
   }

@@ -5,7 +5,8 @@ const {
   obtenerIdLocal,
   obtenerIdNegocioIdLocal,
   obtenerModulo,
-  actualizarModulo
+  actualizarModulo,
+  eliminarModulo
 } = require("./helper");
 const { formatSuiteCRMDateTime } = require("./helper");
 
@@ -109,4 +110,26 @@ const actualizarPartida = async record => {
   }
 };
 
-module.exports = { crearPartida, actualizarPartida };
+/**
+ * Elimina un registro de Partida en SuiteCRM
+ * @param {object} record Objeto a eliminar
+ * @returns {string} Respuesta de SuiteCRM
+ */
+const eliminarPartida = async numeroPartida => {
+  try {
+    const idModulo = (await obtenerModulo({
+      modulo: "qtk_partida",
+      nomUnico: numeroPartida,
+      campoNomUnico: "numero_unico_c"
+    })).id;
+
+    response = await eliminarModulo({ modulo: "qtk_partida", idModulo });
+
+    return response;
+  } catch (ex) {
+    console.log(`Error al eliminar la Partida ${numeroPartida}: ${ex.message}`);
+    throw ex;
+  }
+};
+
+module.exports = { crearPartida, actualizarPartida, eliminarPartida };

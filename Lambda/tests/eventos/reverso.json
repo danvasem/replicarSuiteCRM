@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:b90df25c-7a75-420a-b367-9a535bbabd77",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "1377e318-d628-54d1-babc-b680b08d0d8c",
+        "TopicArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL",
+        "Subject": null,
+        "Message": "{\"$type\":\"Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes\",\"IdCliente\":588,\"IdNegocio\":0,\"Fecha\":\"2019-07-04T20:41:06.137887+00:00\",\"Cantidad\":3,\"ListaRegistros\":[{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsCuenta, Quantik.Vinco.Lambda.Comunes\",\"IdRdsRegistroChanged\":null,\"NumeroUnico\":\"588-4-1-7692946\",\"IdCliente\":null,\"IdNegocio\":null,\"IdTipoCuenta\":null,\"SaldoDisponible\":7.00,\"SaldoDisponibleBase\":7.00,\"FechaApertura\":null,\"FechaVigencia\":null,\"FechaExpiracion\":null,\"SaldoContable\":7.00,\"SaldoContableBase\":7.00,\"Estado\":\"A\",\"IdEntidad\":0,\"IdRdsRegistro\":null,\"TipoOperacion\":2,\"RequiereActualizarId\":false,\"RequiereActualizarClavesForaneas\":false,\"TipoEntidad\":7,\"Procedimientos\":[],\"SentenciaExecute\":null},{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsPartida, Quantik.Vinco.Lambda.Comunes\",\"IdRdsRegistroChanged\":null,\"IdJuego\":null,\"IdCliente\":null,\"IdClienteAdmin\":null,\"NumeroUnico\":\"588-4-2169994\",\"ValorAlcanzado\":null,\"Progreso\":null,\"ValorCliente\":null,\"FechaCreacion\":null,\"FechaFin\":null,\"Estado\":null,\"Repeticion\":null,\"IdEntidad\":1,\"IdRdsRegistro\":null,\"TipoOperacion\":3,\"RequiereActualizarId\":false,\"RequiereActualizarClavesForaneas\":false,\"TipoEntidad\":6,\"Procedimientos\":[],\"SentenciaExecute\":null},{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsEvento, Quantik.Vinco.Lambda.Comunes\",\"IdRdsRegistroChanged\":null,\"IdCliente\":null,\"IdLocal\":null,\"IdTipoEvento\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":1,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"NumeroUnico\":\"588-4-40-4610311\",\"FechaCreacion\":null,\"Valor\":null,\"IdClienteResponsable\":null,\"IdUsuarioResponsable\":null,\"Estado\":null,\"TipoCodigoCliente\":null,\"CodigoCliente\":null,\"ValoresAcumulados\":null,\"IdEntidad\":2,\"IdRdsRegistro\":null,\"TipoOperacion\":3,\"RequiereActualizarId\":false,\"RequiereActualizarClavesForaneas\":false,\"TipoEntidad\":8,\"Procedimientos\":[],\"SentenciaExecute\":null}],\"TipoMensaje\":4,\"NumeroUnicoPaquete\":null,\"OrdenPaquete\":0}",
+        "Timestamp": "2019-07-04T20:41:09.030Z",
+        "SignatureVersion": "1",
+        "Signature": "e1kb2w9JxuhHKXUeeR+4zbk8TvKw1rUdTBGsWWbuagb1Z8qqcBEZnj0UBJIELTrgNwoVLXcGaOK3654YtwcLi5R3FPyCnSY/KG1OTBZKExlcbjKs+0lgRy1mr/Vl//vsndMbr+tFMtYUgYpipTceJ6WJgUtftSKbwEZ3QbiyY/wNY0ZXojcJfAXDFFYMvIIg29Ehi764Ql3SREZw2O4Kh8W6nh6HxUzJWNbg91OHf+QskY5UV4ITJ14P7zNdVZz3JILzjlLeNLUlkScHNL09qHtsJ+ONI5ULR9x0907OX6f9h28VnhrfhLG2laqn5LmygZ3uD/BjtplRv/GsOzAaFA==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-6aad65c2f9911b05cd53efda11f913f9.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:b90df25c-7a75-420a-b367-9a535bbabd77",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
