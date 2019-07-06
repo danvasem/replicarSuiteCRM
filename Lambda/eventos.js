@@ -458,4 +458,87 @@ const registrarReverso = async (record, evento) => {
   }
 };
 
-module.exports = { registrarAcumulacion, registrarAfiliacion, registrarRedencion, eliminarEvento, registrarReverso };
+/**
+ * Registra un nuevo evento de canje de cupón en SuiteCRM
+ * @param {object} record El objeto con los datos del cupón
+ * @returns {object} Respuesta de SuiteCRM
+ */
+const registrarCuponJuego = async record => {
+  try {
+    const idCliente = await obtenerIdCliente(record.IdCliente.IdClaveForanea);
+    const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
+    const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
+    const idTipoEvento = await obtenerIdTipoEvento(record.IdTipoEvento.IdClaveForanea);
+
+    let estrellasGanadas = 0,
+      puntosGanados = 0;
+    if (record.ValoresAcumulados.length > 0) {
+      estrellasGanadas = record.ValoresAcumulados[0].SaldoCuenta;
+      puntosGanados = record.ValoresAcumulados[0].AvancePartida;
+    }
+
+    const postData = JSON.stringify({
+      data: {
+        type: "qtk_cupon_juego",
+        attributes: {
+          name: record.NumeroUnico,
+          numero_unico_c: record.NumeroUnico,
+          qtk_tipo_evento_id_c: idTipoEvento,
+          fecha_canje_cupon_c: formatSuiteCRMDateTime(record.FechaCreacion),
+          valor_c: record.Valor,
+          //usuario_responsable
+          estado_c: record.Estado,
+          tipo_codigo_cliente_c: record.TipoCodigoCliente,
+          codigo_cliente_c: record.CodigoCliente,
+          cupon_canjeado_c: record.CodigoCupon,
+          puntos_ganados_c: puntosGanados,
+          estrellas_ganados_c: estrellasGanadas
+        }
+      }
+    });
+
+    //Procedemos a crear el cupón juego
+    const cupon = await crearModulo({
+      modulo: "qtk_cupon_juego",
+      postData
+    });
+
+    //Procedemos a crear la relación con el Cliente
+    let response = await crearRelacion({
+      moduloDer: "Contacts",
+      moduloIzq: "qtk_cupon_juego",
+      idDer: idCliente,
+      idIzq: cupon.data.id
+    });
+
+    //Procedemos a crear la relación con el Local
+    response = await crearRelacion({
+      moduloDer: "qtk_local",
+      moduloIzq: "qtk_cupon_juego",
+      idDer: idLocal,
+      idIzq: cupon.data.id
+    });
+
+    //Procedemos a crear la relación con el Negocio
+    response = await crearRelacion({
+      moduloDer: "qtk_negocio",
+      moduloIzq: "qtk_cupon_juego",
+      idDer: idNegocio,
+      idIzq: cupon.data.id
+    });
+
+    return response;
+  } catch (ex) {
+    console.log("Error en registrar Cupón Juego: " + ex.message);
+    throw ex;
+  }
+};
+
+module.exports = {
+  registrarAcumulacion,
+  registrarAfiliacion,
+  registrarRedencion,
+  eliminarEvento,
+  registrarReverso,
+  registrarCuponJuego
+};

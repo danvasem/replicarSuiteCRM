@@ -1,16 +1,3 @@
-/**
- *
- * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
- * @param {Object} event - API Gateway Lambda Proxy Input Format
- *
- * Context doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html
- * @param {Object} context
- *
- * Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
- * @returns {Object} object - API Gateway Lambda Proxy Output Format
- *
- */
-
 const AWS = require("aws-sdk");
 const dynamodb = new AWS.DynamoDB();
 const { crearCliente, actualizarCliente, crearClienteNegocio, crearCalificacionNegocio } = require("./cliente");
@@ -19,7 +6,8 @@ const {
   registrarAfiliacion,
   registrarRedencion,
   eliminarEvento,
-  registrarReverso
+  registrarReverso,
+  registrarCuponJuego
 } = require("./eventos");
 const { crearCuenta, actualizarCuenta } = require("./cuenta");
 const { crearPartida, actualizarPartida, eliminarPartida } = require("./partida");
@@ -29,6 +17,7 @@ const TIPO_EVENTO_ACUMULACION = 1;
 const TIPO_EVENTO_AFILIACION = 3;
 const TIPO_EVENTO_REDENCION = 2;
 const TIPO_EVENTO_REVERSO = 4;
+const TIPO_EVENTO_CUPON_JUEGO = 5;
 
 const TIPO_OPERACION_INSERT = 1;
 const TIPO_OPERACION_UPDATE = 2;
@@ -37,6 +26,17 @@ const TIPO_OPERACION_NINGUNO = 4;
 
 const TIPO_PAQUETE_SUITECRM = 2;
 const TIPO_MENSAJE_REPLICAR_TODOS_PAQUETES = 1;
+
+/**
+ * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
+ * @param {Object} event - API Gateway Lambda Proxy Input Format
+ *
+ * Context doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html
+ * @param {Object} context
+ *
+ * Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
+ * @returns {Object} object - API Gateway Lambda Proxy Output Format
+ */
 
 exports.lambdaHandler = async (event, context) => {
   console.log(JSON.stringify(event));
@@ -54,6 +54,7 @@ exports.lambdaHandler = async (event, context) => {
     //Ejecutamos el paquete actual. NOTA: si el mensaje es replicar todos los paquetes, entonces NO se ejecuta el actual
     if (data.TipoMensaje === 1 || (await ejecutarPaquete(data, event))) {
       //Considerar que solo si el paquete actual ejecuta correctamente se ejecutaran los demás paquetes
+      let resultado = true;
       if (paquetesPendientes.length) {
         console.log("Ejecución de paquetes pendiente por procesar.");
         console.log("Cantidad de paquetes: " + paquetesPendientes.length);
@@ -62,15 +63,17 @@ exports.lambdaHandler = async (event, context) => {
           console.log(paquete.MsjPaqueteRDS.S);
           if (await ejecutarPaquete(JSON.parse(paquete.MsjPaqueteRDS.S))) {
             await eliminarPaquetePendienteProcesar(paquete);
+          } else {
+            resultado = false; //Si al menos un paquete falla, entonces el resultado es falso.
           }
         }
       }
+      return resultado;
     }
-    return true;
   } catch (err) {
     console.log("Error en la ejecución general de replicación: " + err.message);
   }
-  return false;
+  return false; //Para indicar que el paquete ha presentado problemas en su ejecución
 };
 
 /**
@@ -123,14 +126,20 @@ const ejecutarPaquete = async (data, event = null) => {
                 case TIPO_EVENTO_AFILIACION:
                   await registrarAfiliacion(record, idCampania);
                   break;
-                case TIPO_EVENTO_REVERSO: {
-                  //Obtenemos el evento reversado
-                  const evento = data.ListaRegistros.find(
-                    X => X.$type.includes("RDS.RdsEvento") && X.IdTipoEvento.IdClaveForanea !== TIPO_EVENTO_REVERSO
-                  );
-                  await registrarReverso(record, evento);
+                case TIPO_EVENTO_REVERSO:
+                  {
+                    //Obtenemos el evento reversado
+                    const evento = data.ListaRegistros.find(
+                      X => X.$type.includes("RDS.RdsEvento") && X.IdTipoEvento.IdClaveForanea !== TIPO_EVENTO_REVERSO
+                    );
+                    await registrarReverso(record, evento);
+                  }
                   break;
-                }
+                case TIPO_EVENTO_CUPON_JUEGO:
+                  {
+                    await registrarCuponJuego(record);
+                  }
+                  break;
               }
             }
             break;
@@ -192,7 +201,7 @@ const ejecutarPaquete = async (data, event = null) => {
     return true;
   } catch (err) {
     console.log("Error en Ejecutar Paquete: " + err.message);
-    if (event) await registarPaqueteTablaTemporal(event, data, err.message);
+    if (event) await registarPaqueteTablaTemporal(data, contadorPaquete, err.message);
     return false; //Se indica que el paquete dió error y se almacenó en VP_PaqueteRDS
   }
 };
@@ -203,9 +212,15 @@ const ejecutarPaquete = async (data, event = null) => {
  * @param {string} data La data del mensaje ya convertido en objeto JSON
  * @param {string} err El mensaje de error
  */
-const registarPaqueteTablaTemporal = async (event, data, err) => {
+const registarPaqueteTablaTemporal = async (data, cantidadRegistrosEjecutados, err) => {
   console.log("Procedemos a guardar temporalmente el registro en la tabla VC_PaqueteRDS");
+  console.log("Total de registros del paquete: " + data.ListaRegistros.length);
+  console.log("Total de registros ejecutados: " + cantidadRegistrosEjecutados);
+  console.log("Total de registros guardar: " + (data.ListaRegistros.length - cantidadRegistrosEjecutados));
   try {
+    //Quitamos los registros que ya se han ejecutado
+    data.ListaRegistros = data.ListaRegistros.slice(cantidadRegistrosEjecutados);
+
     const item = {
       TableName: "VC_PaqueteRDS",
       Item: {
@@ -214,7 +229,7 @@ const registarPaqueteTablaTemporal = async (event, data, err) => {
         NegocioFecha: {
           S: `${data.IdNegocio}-${TIPO_PAQUETE_SUITECRM}-${1000000 + Math.abs(Math.floor(Math.random() * 10000000))}`
         },
-        MsjPaqueteRDS: { S: event.Records[0].Sns.Message },
+        MsjPaqueteRDS: { S: JSON.stringify(data) },
         FechaMsj: { S: data.Fecha },
         FechaUlt: { S: new Date().toISOString() },
         CodError: { N: "-1" },
@@ -261,6 +276,10 @@ const obtenerPaquetesPendientesProcesar = async (idCliente, idNegocio) => {
   }
 };
 
+/**
+ * Lee todos los paquetes de la tabla VC_PaqueteRDS
+ * @returns {array} Lista de paquetes
+ */
 const obtenerTodosPaquetesPendientesProcesar = async () => {
   try {
     const params = {
