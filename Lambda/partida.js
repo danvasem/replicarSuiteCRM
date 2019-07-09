@@ -2,8 +2,7 @@ const {
   crearModulo,
   crearRelacion,
   obtenerIdCliente,
-  obtenerIdLocal,
-  obtenerIdNegocioIdLocal,
+  obtenerIdNegocio,
   obtenerModulo,
   actualizarModulo,
   eliminarModulo
@@ -15,19 +14,15 @@ const { formatSuiteCRMDateTime } = require("./helper");
  * @param {string} record Datos del registro
  * @returns {string} Respuesta de SuiteCRM
  */
-const crearPartida = async (record, evento, campania = null) => {
+const crearPartida = async (record, movPartida) => {
   try {
     const idCliente = await obtenerIdCliente(record.IdCliente.IdClaveForanea);
-    const idLocal = await obtenerIdLocal(evento.IdLocal.IdClaveForanea);
-    const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
-    let idCampania = null;
-    if (campania != null) {
-      idCampania = (await obtenerModulo({
-        modulo: "qtk_campania",
-        id: campania,
-        campoId: "id_campania_c"
-      })).id;
-    }
+    const idNegocio = await obtenerIdNegocio(movPartida.IdNegocio.IdClaveForanea);
+    let idCampania = (await obtenerModulo({
+      modulo: "qtk_campania",
+      id: movPartida.IdCampania.IdClaveForanea,
+      campoId: "id_campania_c"
+    })).id;
 
     const postData = JSON.stringify({
       data: {

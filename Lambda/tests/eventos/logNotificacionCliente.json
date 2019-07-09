@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:29056dbf-af96-467f-bc45-5d9d5c30908d",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "b06dde56-6bae-50e9-aab9-8bcad91a0280",
+        "TopicArn": "arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL",
+        "Subject": null,
+        "Message": "{\"$type\":\"Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes\",\"IdCliente\":503,\"IdNegocio\":0,\"Fecha\":\"2019-07-08T02:54:44.3473458+00:00\",\"Cantidad\":1,\"ListaRegistros\":[{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsLogNotificacionCliente, Quantik.Vinco.Lambda.Comunes\",\"IdRdsRegistroChanged\":null,\"IdCliente\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":503,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"IdNegocio\":{\"$type\":\"Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes\",\"IdClaveForanea\":2,\"IdEntidad\":null,\"PoseeClaveForanea\":true},\"NombreUnicoGrupo\":\"MENSAJE_CUMPLEANIOS_SNS\",\"FechaEnvio\":\"2019-07-08T02:54:44.3473522+00:00\",\"Estado\":\"E\",\"Mensaje\":\"🎉 ¡Felicidades! Daniel Alfonso Hoy es tu cumpleaños y queremos celebrarlo junto a ti 🎂\",\"Canal\":\"P\",\"Titulo\":null,\"Error\":null,\"IdEntidad\":0,\"IdRdsRegistro\":null,\"TipoOperacion\":1,\"RequiereActualizarId\":true,\"RequiereActualizarClavesForaneas\":false,\"TipoEntidad\":0,\"Procedimientos\":[],\"SentenciaExecute\":null}],\"TipoMensaje\":0,\"NumeroUnicoPaquete\":null,\"OrdenPaquete\":0}",
+        "Timestamp": "2019-07-08T02:54:44.356Z",
+        "SignatureVersion": "1",
+        "Signature": "D9VOx5vj4sHhs+hCrSBXqv6tJdXlqBwdoPG6cMSePt4+9/J/fxe7ahjzTPLS/fw/6Ho7fZIW522BVagGcyE4006Ex2amEWC6G8PL3don3tME3VYAY8AL+MFiR09RswtkK3j0oYJIJZsovqFZNlGXh2WMZdY4l2aApq62iZFf1Yp3qeHHcjIvcXCadg+Z5K8hB0gPvj7EuPz5KXJ5nqyPYLlz4tmjj5RMeTOHImuQc143I0g1vls5Z+o1rK4ZTVn4Gkn6gUjO7OlgmZZ7QNmvTNAupYQdBiXwSr0eSriwTiyiwX3mA0HTI3mcJnoGiUu/6XQ5pG1Nc9olYbuLtV03lA==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-6aad65c2f9911b05cd53efda11f913f9.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:984544342457:VC_ReplicarMySQL:29056dbf-af96-467f-bc45-5d9d5c30908d",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

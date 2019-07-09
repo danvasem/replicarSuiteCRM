@@ -191,6 +191,19 @@ const obtenerIdTipoEvento = async idTipoEvento => {
   }
 };
 
+const obtenerIdUsuario = async idUsuario => {
+  try {
+    return (await obtenerModulo({
+      modulo: "Users",
+      id: idUsuario,
+      campoId: "id_usuario_c"
+    })).id;
+  } catch (ex) {
+    console.log(`No se encontró Usuario con id_usuario_c ${idUsuario}`);
+    throw ex;
+  }
+};
+
 const obtenerIdCodigoCliente = async codigo => {
   try {
     return (await obtenerModulo({
@@ -231,6 +244,7 @@ module.exports = {
   obtenerIdNegocio,
   obtenerIdNegocioIdLocal,
   obtenerIdTipoEvento,
+  obtenerIdUsuario,
   legacyCrearRelacion,
   obtenerIdCodigoCliente,
   eliminarModulo

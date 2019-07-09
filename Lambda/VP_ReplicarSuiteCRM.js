@@ -12,6 +12,7 @@ const {
 const { crearCuenta, actualizarCuenta } = require("./cuenta");
 const { crearPartida, actualizarPartida, eliminarPartida } = require("./partida");
 const { crearCodigoCliente, actualizarCodigoCliente } = require("./vincard");
+const { registrarLogNotificacionCliente } = require("./logNotificacionCliente");
 
 const TIPO_EVENTO_ACUMULACION = 1;
 const TIPO_EVENTO_AFILIACION = 3;
@@ -84,6 +85,7 @@ exports.lambdaHandler = async (event, context) => {
 const ejecutarPaquete = async (data, event = null) => {
   let contadorPaquete = 0;
   try {
+    prepararPaquete(data.ListaRegistros);
     for (contadorPaquete = 0; contadorPaquete < data.ListaRegistros.length; contadorPaquete++) {
       let record = data.ListaRegistros[contadorPaquete];
       if (record.$type.includes("RDS.RdsClienteNegocio")) {
@@ -171,13 +173,14 @@ const ejecutarPaquete = async (data, event = null) => {
         switch (record.TipoOperacion) {
           case TIPO_OPERACION_INSERT:
             {
-              const evento = data.ListaRegistros.find(X => X.$type.includes("RDS.RdsEvento"));
               //Obtenemos la campania relacionada, NOTA: Esto es una simplificación que evita multiples-campañas
-              const campania = data.ListaRegistros.find(
-                X => X.$type.includes("RDS.RdsMovPartida") && X.IdCampania != null
+              const movPartida = data.ListaRegistros.find(
+                X =>
+                  X.$type.includes("RDS.RdsMovPartida") &&
+                  X.IdPartida != null &&
+                  X.IdPartida.IdEntidad === record.IdEntidad
               );
-              const idCampania = campania ? campania.IdCampania.IdClaveForanea : null;
-              await crearPartida(record, evento, idCampania);
+              await crearPartida(record, movPartida);
             }
             break;
           case TIPO_OPERACION_UPDATE:
@@ -194,6 +197,12 @@ const ejecutarPaquete = async (data, event = null) => {
             break;
           case TIPO_OPERACION_UPDATE:
             await actualizarCodigoCliente(record);
+            break;
+        }
+      } else if (record.$type.includes("RDS.RdsLogNotificacionCliente")) {
+        switch (record.TipoOperacion) {
+          case TIPO_OPERACION_INSERT:
+            await registrarLogNotificacionCliente(record);
             break;
         }
       }
@@ -269,9 +278,34 @@ const obtenerPaquetesPendientesProcesar = async (idCliente, idNegocio) => {
 
     const res = await dynamodb.query(params).promise();
 
+    if (res.Items.length > 0) {
+      //Ordenamos por la fecha del mensaje de manera asc
+      res.Items.sort((a, b) => {
+        return new Date(a.FechaMsj.S) - new Date(b.FechaMsj.S);
+      });
+    }
     return res.Items;
   } catch (ex) {
-    console.log("Error en obtener el paquete pendiente de procesar: " + ex);
+    console.log("Error en obtener el paquete pendiente de procesar: " + ex.message);
+    throw ex;
+  }
+};
+
+/**
+ * Prepara el orden de la lista de paquetes para su correcta ejecución
+ * @param {array} listaPaquetes
+ */
+const prepararPaquete = listaPaquetes => {
+  try {
+    //Preguntamos por redención
+    const redencion = listaPaquetes.find(X => X.$type.includes("RDS.RdsRedencion"));
+    if (redencion != null) {
+      //Procedemos a colocar redencion como primer registro
+      listaPaquetes.splice(listaPaquetes.indexOf(redencion), 1);
+      listaPaquetes.unshift(redencion);
+    }
+  } catch (ex) {
+    console.log("Error en prepararPaquete: " + ex.message);
     throw ex;
   }
 };
@@ -287,9 +321,15 @@ const obtenerTodosPaquetesPendientesProcesar = async () => {
       Select: "ALL_ATTRIBUTES"
     };
     const res = await dynamodb.scan(params).promise();
+    if (res.Items.length > 0) {
+      //Ordenamos por la fecha del mensaje de manera asc
+      res.Items.sort((a, b) => {
+        return new Date(a.FechaMsj.S) - new Date(b.FechaMsj.S);
+      });
+    }
     return res.Items;
   } catch (ex) {
-    console.log("Error en obtener todos los paquetes pendientes de procesar: " + ex);
+    console.log("Error en obtener todos los paquetes pendientes de procesar: " + ex.message);
     throw ex;
   }
 };

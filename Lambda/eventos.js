@@ -6,6 +6,7 @@ const {
   obtenerIdNegocioIdLocal,
   obtenerIdNegocio,
   obtenerIdTipoEvento,
+  obtenerIdUsuario,
   obtenerModulo,
   obtenerIdCodigoCliente,
   eliminarModulo,
@@ -24,6 +25,7 @@ const registrarAcumulacion = async (record, campania = null) => {
     const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
     const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
     const idTipoEvento = await obtenerIdTipoEvento(record.IdTipoEvento.IdClaveForanea);
+    const idUsuario = await obtenerIdUsuario(record.IdUsuarioResponsable.IdClaveForanea);
     let idCodigoCliente = null;
     if (record.TipoCodigoCliente === "C" && record.CodigoCliente) {
       idCodigoCliente = await obtenerIdCodigoCliente(record.CodigoCliente);
@@ -53,7 +55,7 @@ const registrarAcumulacion = async (record, campania = null) => {
           qtk_tipo_evento_id_c: idTipoEvento,
           fecha_acumulacion_c: formatSuiteCRMDateTime(record.FechaCreacion),
           valor_c: record.Valor,
-          //usuario_responsable
+          user_id_c: idUsuario,
           estado_c: record.Estado,
           tipo_codigo_cliente_c: record.TipoCodigoCliente,
           codigo_cliente_c: record.CodigoCliente,
@@ -121,6 +123,7 @@ const registrarAfiliacion = async (record, campania = null) => {
     const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
     const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
     const idTipoEvento = await obtenerIdTipoEvento(record.IdTipoEvento.IdClaveForanea);
+    const idUsuario = await obtenerIdUsuario(record.IdUsuarioResponsable.IdClaveForanea);
     let idCodigoCliente = null;
     if (record.TipoCodigoCliente === "C" && record.CodigoCliente) {
       idCodigoCliente = await obtenerIdCodigoCliente(record.CodigoCliente);
@@ -150,7 +153,7 @@ const registrarAfiliacion = async (record, campania = null) => {
           qtk_tipo_evento_id_c: idTipoEvento,
           fecha_afiliacion_c: formatSuiteCRMDateTime(record.FechaCreacion),
           valor_c: record.Valor,
-          //usuario_responsable
+          user_id_c: idUsuario,
           estado_c: record.Estado,
           tipo_codigo_cliente_c: record.TipoCodigoCliente,
           codigo_cliente_c: record.CodigoCliente,
@@ -218,6 +221,7 @@ const registrarRedencion = async (record, evento, cuenta) => {
     const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
     const idNegocio = await obtenerIdNegocio(record.IdNegocio.IdClaveForanea);
     const idTipoEvento = await obtenerIdTipoEvento(evento.IdTipoEvento.IdClaveForanea);
+    const idUsuario = await obtenerIdUsuario(evento.IdUsuarioResponsable.IdClaveForanea);
     let idCodigoCliente = null;
     if (evento.TipoCodigoCliente === "C" && evento.CodigoCliente) {
       idCodigoCliente = await obtenerIdCodigoCliente(evento.CodigoCliente);
@@ -242,13 +246,12 @@ const registrarRedencion = async (record, evento, cuenta) => {
           qtk_tipo_evento_id_c: idTipoEvento,
           fecha_redencion_c: formatSuiteCRMDateTime(record.FechaRedencion),
           valor_c: record.Valor,
-          //usuario_responsable
+          user_id_c: idUsuario,
           estado_c: evento.Estado,
           tipo_codigo_cliente_c: evento.TipoCodigoCliente,
           monto_referencial_c: record.MontoReferncial,
           qtk_cuenta_id_c: idCuenta,
           codigo_cliente_c: evento.CodigoCliente
-          //vincard
         }
       }
     });
@@ -354,6 +357,7 @@ const registrarReverso = async (record, evento) => {
     const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
     const idTipoEvento = await obtenerIdTipoEvento(record.IdTipoEvento.IdClaveForanea);
     const idTipoEventoReversado = await obtenerIdTipoEvento(evento.IdTipoEvento.IdClaveForanea);
+    const idUsuario = await obtenerIdUsuario(record.IdUsuarioResponsable.IdClaveForanea);
 
     //Obtenemos el evento original
     let modulo = "";
@@ -410,7 +414,7 @@ const registrarReverso = async (record, evento) => {
           numero_unico_c: record.NumeroUnico,
           qtk_tipo_evento_id_c: idTipoEvento,
           fecha_reverso_c: formatSuiteCRMDateTime(record.FechaCreacion),
-          //usuario_responsable
+          user_id_c: idUsuario,
           estado_c: record.Estado,
           qtk_tipo_evento_id1_c: idTipoEventoReversado,
           reverso_valor_c: moduloEvento.name_value_list.valor_c.value,
@@ -469,6 +473,7 @@ const registrarCuponJuego = async record => {
     const idLocal = await obtenerIdLocal(record.IdLocal.IdClaveForanea);
     const idNegocio = await obtenerIdNegocioIdLocal(idLocal);
     const idTipoEvento = await obtenerIdTipoEvento(record.IdTipoEvento.IdClaveForanea);
+    const idUsuario = await obtenerIdUsuario(record.IdUsuarioResponsable.IdClaveForanea);
 
     let estrellasGanadas = 0,
       puntosGanados = 0;
@@ -486,7 +491,7 @@ const registrarCuponJuego = async record => {
           qtk_tipo_evento_id_c: idTipoEvento,
           fecha_canje_cupon_c: formatSuiteCRMDateTime(record.FechaCreacion),
           valor_c: record.Valor,
-          //usuario_responsable
+          user_id_c: idUsuario,
           estado_c: record.Estado,
           tipo_codigo_cliente_c: record.TipoCodigoCliente,
           codigo_cliente_c: record.CodigoCliente,

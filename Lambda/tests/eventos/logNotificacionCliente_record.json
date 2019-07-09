@@ -1,0 +1,43 @@
+{
+    "$type": "Quantik.Vinco.Lambda.Comunes.Mensajes.MsjPaqueteRDS, Quantik.Vinco.Lambda.Comunes",
+    "IdCliente": 503,
+    "IdNegocio": 0,
+    "Fecha": "2019-07-08T02:54:44.3473458+00:00",
+    "Cantidad": 1,
+    "ListaRegistros": [
+        {
+            "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsLogNotificacionCliente, Quantik.Vinco.Lambda.Comunes",
+            "IdRdsRegistroChanged": null,
+            "IdCliente": {
+                "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+                "IdClaveForanea": 503,
+                "IdEntidad": null,
+                "PoseeClaveForanea": true
+            },
+            "IdNegocio": {
+                "$type": "Quantik.Vinco.Lambda.Comunes.RDS.RdsClaveForanea, Quantik.Vinco.Lambda.Comunes",
+                "IdClaveForanea": 2,
+                "IdEntidad": null,
+                "PoseeClaveForanea": true
+            },
+            "NombreUnicoGrupo": "MENSAJE_CUMPLEANIOS_SNS",
+            "FechaEnvio": "2019-07-08T02:54:44.3473522+00:00",
+            "Estado": "E",
+            "Mensaje": "🎉 ¡Felicidades! Daniel Alfonso Hoy es tu cumpleaños y queremos celebrarlo junto a ti 🎂",
+            "Canal": "P",
+            "Titulo": null,
+            "Error": null,
+            "IdEntidad": 0,
+            "IdRdsRegistro": null,
+            "TipoOperacion": 1,
+            "RequiereActualizarId": true,
+            "RequiereActualizarClavesForaneas": false,
+            "TipoEntidad": 0,
+            "Procedimientos": [],
+            "SentenciaExecute": null
+        }
+    ],
+    "TipoMensaje": 0,
+    "NumeroUnicoPaquete": null,
+    "OrdenPaquete": 0
+}
