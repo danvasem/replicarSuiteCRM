@@ -1,0 +1,15 @@
+{
+  "name": "importacion",
+  "version": "1.0.0",
+  "description": "",
+  "main": "VP_MigrarSuiteCRM.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.490.0",
+    "mysql": "^2.17.1"
+  }
+}
