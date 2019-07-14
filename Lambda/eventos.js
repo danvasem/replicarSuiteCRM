@@ -397,13 +397,19 @@ const registrarReverso = async (record, evento) => {
     });
 
     //En el caso de redención, debemon obtener el Id del premio
-    if (evento.IdTipoEvento.IdClaveForanea === 2) {
+    if (evento.IdTipoEvento.IdClaveForanea === 2 && moduloEvento != null) {
       const premio = await obtenerRelacionesModulo({
         modulo: "qtk_redencion",
         id: moduloEvento.id,
         nombreRelacion: "qtk_premio_qtk_redencion_1"
       });
       idPremio = premio.data[0].id;
+    } else if (record.IdPremioReversado != null) {
+      idPremio = (await obtenerModulo({
+        modulo: "qtk_premio",
+        id: record.IdPremioReversado,
+        campoId: "id_premio_c"
+      })).id;
     }
 
     const postData = JSON.stringify({
@@ -417,8 +423,10 @@ const registrarReverso = async (record, evento) => {
           user_id_c: idUsuario,
           estado_c: record.Estado,
           qtk_tipo_evento_id1_c: idTipoEventoReversado,
-          reverso_valor_c: moduloEvento.name_value_list.valor_c.value,
-          reverso_fecha_c: formatSuiteCRMDateTime(moduloEvento.name_value_list[nombreCampoFechaCreacion].value),
+          reverso_valor_c: record.ValorReversado ? record.ValorReversado : moduloEvento.name_value_list.valor_c.value,
+          reverso_fecha_c: record.FechaEventoReversado
+            ? formatSuiteCRMDateTime(record.FechaEventoReversado)
+            : formatSuiteCRMDateTime(moduloEvento.name_value_list[nombreCampoFechaCreacion].value),
           reverso_numero_c: evento.NumeroUnico,
           qtk_premio_id_c: idPremio
         }

@@ -99,12 +99,20 @@ const actualizarCliente = async record => {
 const crearClienteNegocio = async record => {
   try {
     const idCliente = await obtenerIdCliente(record.IdCliente.IdClaveForanea);
-    const idNegocio = await obtenerIdNegocio(record.IdNegocio.IdClaveForanea);
+    const negocio = await obtenerModulo({
+      modulo: "qtk_negocio",
+      campos: ["name"],
+      id: record.IdNegocio.IdClaveForanea,
+      campoId: "id_negocio_c"
+    });
+    const idNegocio = negocio.id;
+    const nombreNegocio = negocio.name_value_list["name"].value;
 
     const postData = JSON.stringify({
       data: {
         type: "qtk_cliente_negocio",
         attributes: {
+          name: nombreNegocio,
           fecha_creacion_c: formatSuiteCRMDateTime(record.FechaCreacion)
         }
       }
@@ -142,12 +150,20 @@ const crearClienteNegocio = async record => {
 const crearCalificacionNegocio = async record => {
   try {
     const idCliente = await obtenerIdCliente(record.IdCliente.IdClaveForanea);
-    const idNegocio = await obtenerIdNegocio(record.IdNegocio.IdClaveForanea);
+    const negocio = await obtenerModulo({
+      modulo: "qtk_negocio",
+      campos: ["name"],
+      id: record.IdNegocio.IdClaveForanea,
+      campoId: "id_negocio_c"
+    });
+    const idNegocio = negocio.id;
+    const nombreNegocio = negocio.name_value_list["name"].value;
 
     const postData = JSON.stringify({
       data: {
         type: "qtk_cliente_negocio_calificacion",
         attributes: {
+          name: nombreNegocio,
           calificacion_c: record.Rating,
           fecha_calificacion_c: formatSuiteCRMDateTime(record.FechaCreacion)
         }

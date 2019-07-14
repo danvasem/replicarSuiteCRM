@@ -1,5 +1,8 @@
-const { crearCliente } = require("./cliente.js");
+const { crearCliente, crearCalificacionNegocio, crearClienteNegocio } = require("./cliente.js");
 const { crearCodigoCliente, actualizarCodigoCliente } = require("./vincard");
+const { crearCuenta } = require("./cuenta");
+const { registrarLogNotificacionCliente } = require("./logNotificacionCliente");
+const { crearPartida } = require("./partida");
 const {
   registrarAcumulacion,
   registrarAfiliacion,
@@ -31,14 +34,22 @@ const importarClientes = async () => {
         let idCliente = data[i].IdCliente;
 
         await importarCliente(idCliente);
-        //await importarCodigoCliente(idCliente);
-        //await importarAfiliaciones(idCliente);
-        //await importarAcumulaciones(idCliente);
+        await importarCodigoCliente(idCliente);
+        await importarAfiliaciones(idCliente);
+        await importarAcumulaciones(idCliente);
         await importarRedenciones(idCliente);
+        await importarReversos(idCliente);
+        await importarCuponesJuego(idCliente);
+        await importarCuentas(idCliente);
+        await importarCalificacionNegocio(idCliente);
+        await importarClienteNegocio(idCliente);
+        await importarLogNotificacionCliente(idCliente);
+        await importarPartidas(idCliente);
       }
     }
   } catch (ex) {
     console.log("Error en la importación de clientes: " + ex.message);
+    throw ex;
   }
 };
 
@@ -58,60 +69,56 @@ const consultarRDS = async (database, query) => {
 
 const importarCliente = async idCliente => {
   try {
-    let cliente = await consultarRDS("VINCO", `select * from VC_Cliente where IdCliente=${idCliente};`);
-    cliente = JSON.parse(cliente.Payload)[0];
-    await crearCliente({
-      NomUnicoCliente: cliente.sNombreUnico,
-      IdRdsRegistro: cliente.IdCliente,
-      Nombre: cliente.sNombre,
-      Apellido: cliente.sApellido,
-      CodigoSexo: cliente.sSexo,
-      FechaNacimiento: cliente.dFechaNacimiento,
-      CodigoCiudad: cliente.sCiudad,
-      CodigoPais: cliente.sPais,
-      Direccion: cliente.sDireccion,
-      TelefonoMovil: cliente.sTelefonoMovil,
-      CorreoElectronico: cliente.sCorreoElectronico,
-      FechaCreacion: cliente.dFechaCreacion,
-      FechaUltimaModificacion: cliente.dFechaUltimaActualizacion,
-      FechaRegistro: cliente.dFechaRegistroCliente,
-      AppRegistro: cliente.sAppRegistro,
-      TipoLogin: cliente.sTipoLogin,
-      Estado: cliente.sEstado
+    await importarRegistros(`select * from VC_Cliente where IdCliente=${idCliente};`, async cliente => {
+      await crearCliente({
+        NomUnicoCliente: cliente.sNombreUnico,
+        IdRdsRegistro: cliente.IdCliente,
+        Nombre: cliente.sNombre,
+        Apellido: cliente.sApellido,
+        CodigoSexo: cliente.sSexo,
+        FechaNacimiento: cliente.dFechaNacimiento,
+        CodigoCiudad: cliente.sCiudad,
+        CodigoPais: cliente.sPais,
+        Direccion: cliente.sDireccion,
+        TelefonoMovil: cliente.sTelefonoMovil,
+        CorreoElectronico: cliente.sCorreoElectronico,
+        FechaCreacion: cliente.dFechaCreacion,
+        FechaUltimaModificacion: cliente.dFechaUltimaActualizacion,
+        FechaRegistro: cliente.dFechaRegistroCliente,
+        AppRegistro: cliente.sAppRegistro,
+        TipoLogin: cliente.sTipoLogin,
+        Estado: cliente.sEstado
+      });
+      console.log(`Cliente ${idCliente} importado.`);
     });
-    console.log(`Cliente ${idCliente} importado.`);
   } catch (ex) {
     console.log(`Error en la importación de Cliente ${idCliente}: ${ex.message}`);
+    throw ex;
   }
 };
 
 const importarCodigoCliente = async idCliente => {
   try {
-    let cards = await consultarRDS("VINCO", `select * from VC_CodigoCliente where IdCliente=${idCliente};`);
-    cards = JSON.parse(cards.Payload);
-    if (cards.length > 0) {
-      for (let i = 0; i < cards.length; i++) {
-        let vincard = cards[i];
-        await crearCodigoCliente({
-          Codigo: vincard.sCodigo,
-          FechaCreacion: vincard.dFechaCreacion,
-          Estado: vincard.sEstado,
-          IdLocal: { IdClaveForanea: vincard.IdLocal },
-          IdNegocio: { IdClaveForanea: vincard.IdNegocio }
-        });
+    await importarRegistros(`select * from VC_CodigoCliente where IdCliente=${idCliente};`, async vincard => {
+      await crearCodigoCliente({
+        Codigo: vincard.sCodigo,
+        FechaCreacion: vincard.dFechaCreacion,
+        Estado: vincard.sEstado,
+        IdLocal: { IdClaveForanea: vincard.IdLocal },
+        IdNegocio: { IdClaveForanea: vincard.IdNegocio }
+      });
 
-        await actualizarCodigoCliente({
-          Codigo: vincard.sCodigo,
-          FechaActivacion: vincard.dFechaActivacion,
-          Estado: vincard.sEstado,
-          IdCliente: { IdClaveForanea: vincard.IdCliente },
-          IdLocal: { IdClaveForanea: vincard.IdLocalAct },
-          IdNegocio: { IdClaveForanea: vincard.IdNegocioAct }
-        });
+      await actualizarCodigoCliente({
+        Codigo: vincard.sCodigo,
+        FechaActivacion: vincard.dFechaActivacion,
+        Estado: vincard.sEstado,
+        IdCliente: { IdClaveForanea: vincard.IdCliente },
+        IdLocal: { IdClaveForanea: vincard.IdLocalAct },
+        IdNegocio: { IdClaveForanea: vincard.IdNegocioAct }
+      });
 
-        console.log(`Vincard ${vincard.sCodigo} importado.`);
-      }
-    }
+      console.log(`Vincard ${vincard.sCodigo} importado.`);
+    });
   } catch (ex) {
     console.log(`Error en la importación de Vincards: ${ex.message}`);
     throw ex;
@@ -120,8 +127,7 @@ const importarCodigoCliente = async idCliente => {
 
 const importarAcumulaciones = async idCliente => {
   try {
-    let acumulaciones = await consultarRDS(
-      "VINCO",
+    await importarRegistros(
       `select 
     E.dFechaCreacion,
     E.IdCliente,
@@ -145,6 +151,7 @@ const importarAcumulaciones = async idCliente => {
     inner join VINCO.VC_Partida P on P.IdPartida=M.IdPartida
     inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
     where E.IdTipoevento=1
+    and E.sEstado='A'
     and E.IdCliente=${idCliente}
     group by 
     E.dFechaCreacion,
@@ -159,12 +166,8 @@ const importarAcumulaciones = async idCliente => {
     E.sEstado,
     E.sNumeroEventoRelacionado,
     E.sNumeroUnico,
-    E.sTipoCodigoCliente`
-    );
-    acumulaciones = JSON.parse(acumulaciones.Payload);
-    if (acumulaciones.length > 0) {
-      for (let i = 0; i < acumulaciones.length; i++) {
-        let acumulacion = acumulaciones[i];
+    E.sTipoCodigoCliente`,
+      async acumulacion => {
         await registrarAcumulacion(
           {
             NumeroUnico: acumulacion.sNumeroUnico,
@@ -188,59 +191,56 @@ const importarAcumulaciones = async idCliente => {
         );
         console.log(`Acumulacion ${acumulacion.sNumeroUnico} importado.`);
       }
-    }
+    );
   } catch (ex) {
     console.log(`Error en la importación de Acumulaciones: ${ex.message}`);
+    throw ex;
   }
 };
 
 const importarAfiliaciones = async idCliente => {
   try {
-    let acumulaciones = await consultarRDS(
-      "VINCO",
+    await importarRegistros(
       `select 
-    E.dFechaCreacion,
-    E.IdCliente,
-    E.IdClienteResponsable,
-    E.IdEvento,
-    E.IdLocal,
-    E.IdTipoEvento,
-    E.IdUsuarioResponsable,
-    E.mValor,
-    E.sCodigoCliente,
-    E.sEstado,
-    E.sNumeroEventoRelacionado,
-    E.sNumeroUnico,
-    E.sTipoCodigoCliente,
-    max(J.IdCampania) as IdCampania,
-    sum(M.mValorCuenta)  as SaldoCuenta,
-    sum(M.mValor) as AvancePartida
-    from 
-    VINCO.VC_Evento E
-    inner join VINCO.VC_MovPartida M on M.IdEvento=E.IdEvento
-    inner join VINCO.VC_Partida P on P.IdPartida=M.IdPartida
-    inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
-    where E.IdTipoevento=3
-    and E.IdCliente=${idCliente}
-    group by 
-    E.dFechaCreacion,
-    E.IdCliente,
-    E.IdClienteResponsable,
-    E.IdEvento,
-    E.IdLocal,
-    E.IdTipoEvento,
-    E.IdUsuarioResponsable,
-    E.mValor,
-    E.sCodigoCliente,
-    E.sEstado,
-    E.sNumeroEventoRelacionado,
-    E.sNumeroUnico,
-    E.sTipoCodigoCliente`
-    );
-    afiliaciones = JSON.parse(acumulaciones.Payload);
-    if (afiliaciones.length > 0) {
-      for (let i = 0; i < afiliaciones.length; i++) {
-        let afiliacion = afiliaciones[i];
+      E.dFechaCreacion,
+      E.IdCliente,
+      E.IdClienteResponsable,
+      E.IdEvento,
+      E.IdLocal,
+      E.IdTipoEvento,
+      E.IdUsuarioResponsable,
+      E.mValor,
+      E.sCodigoCliente,
+      E.sEstado,
+      E.sNumeroEventoRelacionado,
+      E.sNumeroUnico,
+      E.sTipoCodigoCliente,
+      max(J.IdCampania) as IdCampania,
+      sum(M.mValorCuenta)  as SaldoCuenta,
+      sum(M.mValor) as AvancePartida
+      from 
+      VINCO.VC_Evento E
+      inner join VINCO.VC_MovPartida M on M.IdEvento=E.IdEvento
+      inner join VINCO.VC_Partida P on P.IdPartida=M.IdPartida
+      inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
+      where E.IdTipoevento=3
+      and E.sEstado='A'
+      and E.IdCliente=${idCliente}
+      group by 
+      E.dFechaCreacion,
+      E.IdCliente,
+      E.IdClienteResponsable,
+      E.IdEvento,
+      E.IdLocal,
+      E.IdTipoEvento,
+      E.IdUsuarioResponsable,
+      E.mValor,
+      E.sCodigoCliente,
+      E.sEstado,
+      E.sNumeroEventoRelacionado,
+      E.sNumeroUnico,
+      E.sTipoCodigoCliente`,
+      async afiliacion => {
         await registrarAfiliacion(
           {
             NumeroUnico: afiliacion.sNumeroUnico,
@@ -264,16 +264,16 @@ const importarAfiliaciones = async idCliente => {
         );
         console.log(`Afiliacion ${afiliacion.sNumeroUnico} importado.`);
       }
-    }
+    );
   } catch (ex) {
     console.log(`Error en la importación de Afiliaciones: ${ex.message}`);
+    throw ex;
   }
 };
 
 const importarRedenciones = async idCliente => {
   try {
-    let redenciones = await consultarRDS(
-      "VINCO",
+    await importarRegistros(
       `select
       R.IdCliente,
       R.IdNegocio,
@@ -293,13 +293,10 @@ const importarRedenciones = async idCliente => {
       from VINCO.VC_Redencion R
       inner join VINCO.VC_Evento E on E.IdEvento=R.IdEvento
       inner join VINCO.VC_Cuenta C on C.IdCuenta=R.IdCuenta
-      where R.IdCliente=${idCliente};
-      `
-    );
-    redenciones = JSON.parse(redenciones.Payload);
-    if (redenciones.length > 0) {
-      for (let i = 0; i < redenciones.length; i++) {
-        let redencion = redenciones[i];
+      where E.sEstado='A'
+      and R.IdCliente=${idCliente};
+      `,
+      async redencion => {
         await registrarRedencion(
           {
             FechaRedencion: redencion.dFechaRedencion,
@@ -324,8 +321,290 @@ const importarRedenciones = async idCliente => {
         );
         console.log(`Redencion ${redencion.sNumeroUnico} importado.`);
       }
-    }
+    );
   } catch (ex) {
     console.log(`Error en la importación de Redenciones: ${ex.message}`);
+    throw ex;
+  }
+};
+
+const importarReversos = async idCliente => {
+  try {
+    await importarRegistros(
+      `select
+      E.dFechaCreacion,
+      E.IdCliente,
+      E.IdClienteResponsable,
+      E.IdEvento,
+      E.IdLocal,
+      E.IdTipoEvento,
+      E.IdUsuarioResponsable,
+      E.mValor,
+      E.sCodigoCliente,
+      E.sEstado,
+      E.sNumeroEventoRelacionado,
+      E.sNumeroUnico,
+      E.sTipoCodigoCliente,
+      R.IdTipoEvento IdTipoEventoRelacionado,
+      R.mValor mValorReversado,
+      R.dFechaCreacion dFechaEventoReversado,
+      RD.IdPremio IdPremioReversado
+      from VINCO.VC_Evento E
+      inner join VINCO.VC_Evento R on R.sNumeroUnico=E.sNumeroEventoRelacionado
+      left outer join VINCO.VC_Redencion RD on RD.IdEvento=R.IdEvento
+      where E.IdTipoevento=4 
+      and E.sNumeroEventoRelacionado is not null
+      and E.IdCliente=${idCliente}`,
+      async reverso => {
+        await registrarReverso(
+          {
+            IdCliente: { IdClaveForanea: reverso.IdCliente },
+            IdLocal: { IdClaveForanea: reverso.IdLocal },
+            IdTipoEvento: { IdClaveForanea: reverso.IdTipoEvento },
+            IdUsuarioResponsable: { IdClaveForanea: reverso.IdUsuarioResponsable },
+            NumeroUnico: reverso.sNumeroUnico,
+            FechaCreacion: reverso.dFechaCreacion,
+            Estado: reverso.sEstado,
+            ValorReversado: reverso.mValorReversado,
+            FechaEventoReversado: reverso.dFechaEventoReversado,
+            IdPremioReversado: reverso.IdPremioReversado
+          },
+          {
+            IdTipoEvento: { IdClaveForanea: reverso.IdTipoEventoRelacionado },
+            NumeroUnico: reverso.sNumeroEventoRelacionado
+          }
+        );
+        console.log(`Reverso ${reverso.sNumeroUnico} importado.`);
+      }
+    );
+  } catch (ex) {
+    console.log(`Error en la importación de Reversos: ${ex.message}`);
+    throw ex;
+  }
+};
+
+const importarCuponesJuego = async idCliente => {
+  try {
+    await importarRegistros(
+      `select 
+      E.dFechaCreacion,
+      E.IdCliente,
+      E.IdClienteResponsable,
+      E.IdEvento,
+      E.IdLocal,
+      E.IdTipoEvento,
+      E.IdUsuarioResponsable,
+      E.mValor,
+      E.sCodigoCliente,
+      E.sEstado,
+      E.sNumeroEventoRelacionado,
+      E.sNumeroUnico,
+      E.sTipoCodigoCliente,
+      max(J.IdCampania) as IdCampania,
+      sum(M.mValorCuenta)  as SaldoCuenta,
+      sum(M.mValor) as AvancePartida,
+      J.sCodigoCuponJuego sCodigoCuponJuego
+      from 
+      VINCO.VC_Evento E
+      inner join VINCO.VC_MovPartida M on M.IdEvento=E.IdEvento
+      inner join VINCO.VC_Partida P on P.IdPartida=M.IdPartida
+      inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
+      where E.IdTipoevento=5
+      and E.sEstado='A'
+      and E.IdCliente=${idCliente}
+      group by 
+      E.dFechaCreacion,
+      E.IdCliente,
+      E.IdClienteResponsable,
+      E.IdEvento,
+      E.IdLocal,
+      E.IdTipoEvento,
+      E.IdUsuarioResponsable,
+      E.mValor,
+      E.sCodigoCliente,
+      E.sEstado,
+      E.sNumeroEventoRelacionado,
+      E.sNumeroUnico,
+      E.sTipoCodigoCliente`,
+      async cupon => {
+        await registrarCuponJuego(
+          {
+            NumeroUnico: cupon.sNumeroUnico,
+            IdTipoEvento: { IdClaveForanea: cupon.IdTipoEvento },
+            FechaCreacion: cupon.dFechaCreacion,
+            Valor: cupon.mValor,
+            IdUsuarioResponsable: { IdClaveForanea: cupon.IdUsuarioResponsable },
+            Estado: cupon.sEstado,
+            TipoCodigoCliente: cupon.sTipoCodigoCliente,
+            CodigoCliente: cupon.sCodigoCliente,
+            ValoresAcumulados: [
+              {
+                SaldoCuenta: cupon.SaldoCuenta,
+                AvancePartida: cupon.AvancePartida
+              }
+            ],
+            IdCliente: { IdClaveForanea: cupon.IdCliente },
+            IdLocal: { IdClaveForanea: cupon.IdLocal },
+            CodigoCupon: cupon.sCodigoCuponJuego
+          },
+          cupon.IdCampania
+        );
+        console.log(`Cupón ${cupon.sNumeroUnico} importado.`);
+      }
+    );
+  } catch (ex) {
+    console.log(`Error en la importación de Cupones Juego: ${ex.message}`);
+    throw ex;
+  }
+};
+
+const importarCuentas = async idCliente => {
+  try {
+    await importarRegistros(
+      `select * from VINCO.VC_Cuenta where sEstado='A' and IdCliente=${idCliente}`,
+      async cuenta => {
+        await crearCuenta({
+          NumeroUnico: cuenta.sNumeroUnico,
+          SaldoDisponible: cuenta.mSaldoDisponible,
+          SaldoDisponibleBase: cuenta.mSaldoDisponibleBase,
+          SaldoContable: cuenta.mSaldoContable,
+          SaldoContableBase: cuenta.mSaldoContableBase,
+          FechaApertura: cuenta.dFechaApertura,
+          FechaVigencia: cuenta.dFechaVigencia,
+          FechaExpiracion: cuenta.dFechaExpiracion,
+          Estado: cuenta.sEstado,
+          IdCliente: { IdClaveForanea: cuenta.IdCliente },
+          IdNegocio: { IdClaveForanea: cuenta.IdNegocio }
+        });
+        console.log(`Cuenta ${cuenta.sNumeroUnico} importada`);
+      }
+    );
+  } catch (ex) {
+    console.log(`Error en la importación de cuentas: ${ex.message}`);
+    throw ex;
+  }
+};
+
+const importarCalificacionNegocio = async idCliente => {
+  try {
+    await importarRegistros(
+      `select * from VINCO.VC_ClienteNegocioCalificacion where IdCliente=${idCliente}`,
+      async calificacion => {
+        await crearCalificacionNegocio({
+          Rating: calificacion.iCalificacion,
+          FechaCreacion: calificacion.dFecha,
+          IdCliente: { IdClaveForanea: calificacion.IdCliente },
+          IdNegocio: { IdClaveForanea: calificacion.IdNegocio }
+        });
+        console.log(`Calificación a negocio ${calificacion.IdNegocio} importada`);
+      }
+    );
+  } catch (ex) {
+    console.log(`Error en la importación de Calificaciones Negocio: ${ex.message}`);
+    throw ex;
+  }
+};
+
+const importarClienteNegocio = async idCliente => {
+  try {
+    await importarRegistros(`select * from VINCO.VC_ClienteNegocio where IdCliente=${idCliente};`, async negocio => {
+      await crearClienteNegocio({
+        FechaCreacion: negocio.dFechaCreacion,
+        IdCliente: { IdClaveForanea: negocio.IdCliente },
+        IdNegocio: { IdClaveForanea: negocio.IdNegocio }
+      });
+      console.log(`Cliente ${negocio.IdCliente} Negocio ${negocio.IdNegocio} importado.`);
+    });
+  } catch (ex) {
+    console.log(`Error en la importación de Cliente Negocio: ${ex.message}`);
+    throw ex;
+  }
+};
+
+const importarLogNotificacionCliente = async idCliente => {
+  try {
+    await importarRegistros(
+      `select * from VINCO.VC_LogNotificacionCliente where IdCliente=${idCliente};`,
+      async notificacion => {
+        await registrarLogNotificacionCliente({
+          Titulo: notificacion.sTitulo,
+          FechaEnvio: notificacion.dFechaEnvio,
+          Mensaje: notificacion.sMensaje,
+          NombreUnicoGrupo: notificacion.sNombreUnicoGrupo,
+          Error: notificacion.sError,
+          Canal: notificacion.sCanal,
+          Estado: notificacion.sEstado,
+          IdCliente: { IdClaveForanea: notificacion.IdCliente },
+          IdNegocio: { IdClaveForanea: notificacion.IdNegocio }
+        });
+        console.log(`Log notificación cliente ${notificacion.sTitulo} importado.`);
+      }
+    );
+  } catch (ex) {
+    console.log(`Error en la importación de Log Notificación Cliente: ${ex.message}`);
+    throw ex;
+  }
+};
+
+const importarPartidas = async idCliente => {
+  try {
+    await importarRegistros(
+      `select
+      distinct
+      P.dFechaCreacion,
+      P.dFechaFin,
+      P.fProgreso,
+      P.IdCliente,
+      P.IdClienteAdmin,
+      P.IdJuego,
+      P.IdPartida,
+      P.iRepeticion,
+      P.mValorAlcanzado,
+      P.mValorCliente,
+      P.sEstado,
+      P.sNumeroUnico,
+      J.IdCampania,
+      C.IdNegocio
+      from VINCO.VC_Partida P 
+      inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
+      inner join VINCO.VC_Campania C on C.IdCampania=J.IdCampania
+      inner join VINCO.VC_MovPartida M on M.IdPartida=P.IdPartida
+      inner join VINCO.VC_Evento E on E.IdEvento=M.IdEvento 
+          and E.sEstado='A' 
+      and P.IdCliente=${idCliente}`,
+      async partida => {
+        await crearPartida(
+          {
+            NumeroUnico: partida.sNumeroUnico,
+            ValorAlcanzado: partida.mValorAlcanzado,
+            Progreso: partida.fProgreso,
+            ValorCliente: partida.mValorCliente,
+            FechaCreacion: partida.dFechaCreacion,
+            FechaFin: partida.dFechaFin,
+            Estado: partida.sEstado,
+            Repeticion: partida.iRepeticion,
+            IdCliente: { IdClaveForanea: partida.IdCliente }
+          },
+          {
+            IdNegocio: { IdClaveForanea: partida.IdNegocio },
+            IdCampania: { IdClaveForanea: partida.IdCampania }
+          }
+        );
+        console.log(`Partida ${partida.sNumeroUnico} importado.`);
+      }
+    );
+  } catch (ex) {
+    console.log(`Error en la importación de Partida: ${ex.message}`);
+  }
+};
+
+const importarRegistros = async (query, importacion) => {
+  let resultados = await consultarRDS("VINCO", query);
+  resultados = JSON.parse(resultados.Payload);
+  if (resultados.length > 0) {
+    for (let i = 0; i < resultados.length; i++) {
+      let registro = resultados[i];
+      await importacion(registro);
+    }
   }
 };
