@@ -26,7 +26,7 @@ const crearCliente = async record => {
           email1: record.CorreoElectronico,
           fecha_creacion_vinco_c: formatSuiteCRMDateTime(record.FechaCreacion),
           fecha_actualizacion_vinco_c: formatSuiteCRMDateTime(record.FechaUltimaModificacion),
-          fecha_registro_vinco_c: formatSuiteCRMDateTime(record.FechaRegistro),
+          fecha_registro_vinco_c: record.FechaRegistro ? formatSuiteCRMDateTime(record.FechaRegistro) : null,
           app_registro_vinco_c: record.AppRegistro ? record.AppRegistro.substring(0, 1) : null,
           tipo_login_c: record.TipoLogin,
           estado_vinco_c: record.Estado

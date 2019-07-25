@@ -193,4 +193,9 @@ const legacyLogin = async () => {
   });
 };
 
-module.exports = { serviceCall, legacyServiceCall, legacyLogin };
+const resetearCredenciales = () => {
+  ACCESS_TOKEN = null;
+  SESSION_ID = null;
+};
+
+module.exports = { serviceCall, legacyServiceCall, legacyLogin, resetearCredenciales };

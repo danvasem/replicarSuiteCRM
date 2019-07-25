@@ -10,24 +10,30 @@ const {
   registrarRedencion,
   registrarReverso
 } = require("./eventos");
+const { resetearCredenciales } = require("./serviceCall");
 const AWS = require("aws-sdk");
 const lambda = new AWS.Lambda();
+const DATABASE_NAME = process.env.VINCO_DATABASE_NAME;
 
 exports.lambdaHandler = async (event, context) => {
   try {
-    await importarClientes();
+    await ejecutarImportacion(event.IdCliente);
     return true;
   } catch (ex) {
     console.log("Error en la ejecución de la migración: " + ex.message);
-    return false;
+    return "Error: " + ex.message + " - " + ex.stack;
   }
 };
 
-const importarClientes = async () => {
+const ejecutarImportacion = async idCliente => {
   try {
     console.log("Iniciando importación de Clientes");
+    resetearCredenciales();
     //Obtenemos todos los Ids en VINCO
-    const res = await consultarRDS("VINCO", "select IdCliente from VC_Cliente where IdCliente=605 limit 10");
+    const res = await consultarRDS(
+      DATABASE_NAME,
+      `select IdCliente from VC_Cliente where IdCliente=${idCliente} limit 10`
+    );
     const data = JSON.parse(res.Payload);
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
@@ -35,20 +41,20 @@ const importarClientes = async () => {
 
         await importarCliente(idCliente);
         await importarCodigoCliente(idCliente);
+        await importarCuentas(idCliente);
+        await importarCalificacionNegocio(idCliente);
+        await importarClienteNegocio(idCliente);
         await importarAfiliaciones(idCliente);
         await importarAcumulaciones(idCliente);
         await importarRedenciones(idCliente);
         await importarReversos(idCliente);
         await importarCuponesJuego(idCliente);
-        await importarCuentas(idCliente);
-        await importarCalificacionNegocio(idCliente);
-        await importarClienteNegocio(idCliente);
         await importarLogNotificacionCliente(idCliente);
         await importarPartidas(idCliente);
       }
     }
   } catch (ex) {
-    console.log("Error en la importación de clientes: " + ex.message);
+    console.log("Error en ejecutar importación: " + ex.message);
     throw ex;
   }
 };
@@ -146,10 +152,10 @@ const importarAcumulaciones = async idCliente => {
     sum(M.mValorCuenta)  as SaldoCuenta,
     sum(M.mValor) as AvancePartida
     from 
-    VINCO.VC_Evento E
-    inner join VINCO.VC_MovPartida M on M.IdEvento=E.IdEvento
-    inner join VINCO.VC_Partida P on P.IdPartida=M.IdPartida
-    inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
+    VC_Evento E
+    inner join VC_MovPartida M on M.IdEvento=E.IdEvento
+    inner join VC_Partida P on P.IdPartida=M.IdPartida
+    inner join VC_Juego J on J.IdJuego=P.IdJuego
     where E.IdTipoevento=1
     and E.sEstado='A'
     and E.IdCliente=${idCliente}
@@ -218,11 +224,10 @@ const importarAfiliaciones = async idCliente => {
       max(J.IdCampania) as IdCampania,
       sum(M.mValorCuenta)  as SaldoCuenta,
       sum(M.mValor) as AvancePartida
-      from 
-      VINCO.VC_Evento E
-      inner join VINCO.VC_MovPartida M on M.IdEvento=E.IdEvento
-      inner join VINCO.VC_Partida P on P.IdPartida=M.IdPartida
-      inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
+      from VC_Evento E
+      inner join VC_MovPartida M on M.IdEvento=E.IdEvento
+      inner join VC_Partida P on P.IdPartida=M.IdPartida
+      inner join VC_Juego J on J.IdJuego=P.IdJuego
       where E.IdTipoevento=3
       and E.sEstado='A'
       and E.IdCliente=${idCliente}
@@ -290,9 +295,9 @@ const importarRedenciones = async idCliente => {
       E.sNumeroUnico,
       E.sEstado,
       C.sNumeroUnico cuentaNumeroUnico
-      from VINCO.VC_Redencion R
-      inner join VINCO.VC_Evento E on E.IdEvento=R.IdEvento
-      inner join VINCO.VC_Cuenta C on C.IdCuenta=R.IdCuenta
+      from VC_Redencion R
+      inner join VC_Evento E on E.IdEvento=R.IdEvento
+      inner join VC_Cuenta C on C.IdCuenta=R.IdCuenta
       where E.sEstado='A'
       and R.IdCliente=${idCliente};
       `,
@@ -349,9 +354,9 @@ const importarReversos = async idCliente => {
       R.mValor mValorReversado,
       R.dFechaCreacion dFechaEventoReversado,
       RD.IdPremio IdPremioReversado
-      from VINCO.VC_Evento E
-      inner join VINCO.VC_Evento R on R.sNumeroUnico=E.sNumeroEventoRelacionado
-      left outer join VINCO.VC_Redencion RD on RD.IdEvento=R.IdEvento
+      from VC_Evento E
+      inner join VC_Evento R on R.sNumeroUnico=E.sNumeroEventoRelacionado
+      left outer join VC_Redencion RD on RD.IdEvento=R.IdEvento
       where E.IdTipoevento=4 
       and E.sNumeroEventoRelacionado is not null
       and E.IdCliente=${idCliente}`,
@@ -405,10 +410,10 @@ const importarCuponesJuego = async idCliente => {
       sum(M.mValor) as AvancePartida,
       J.sCodigoCuponJuego sCodigoCuponJuego
       from 
-      VINCO.VC_Evento E
-      inner join VINCO.VC_MovPartida M on M.IdEvento=E.IdEvento
-      inner join VINCO.VC_Partida P on P.IdPartida=M.IdPartida
-      inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
+      VC_Evento E
+      inner join VC_MovPartida M on M.IdEvento=E.IdEvento
+      inner join VC_Partida P on P.IdPartida=M.IdPartida
+      inner join VC_Juego J on J.IdJuego=P.IdJuego
       where E.IdTipoevento=5
       and E.sEstado='A'
       and E.IdCliente=${idCliente}
@@ -460,25 +465,22 @@ const importarCuponesJuego = async idCliente => {
 
 const importarCuentas = async idCliente => {
   try {
-    await importarRegistros(
-      `select * from VINCO.VC_Cuenta where sEstado='A' and IdCliente=${idCliente}`,
-      async cuenta => {
-        await crearCuenta({
-          NumeroUnico: cuenta.sNumeroUnico,
-          SaldoDisponible: cuenta.mSaldoDisponible,
-          SaldoDisponibleBase: cuenta.mSaldoDisponibleBase,
-          SaldoContable: cuenta.mSaldoContable,
-          SaldoContableBase: cuenta.mSaldoContableBase,
-          FechaApertura: cuenta.dFechaApertura,
-          FechaVigencia: cuenta.dFechaVigencia,
-          FechaExpiracion: cuenta.dFechaExpiracion,
-          Estado: cuenta.sEstado,
-          IdCliente: { IdClaveForanea: cuenta.IdCliente },
-          IdNegocio: { IdClaveForanea: cuenta.IdNegocio }
-        });
-        console.log(`Cuenta ${cuenta.sNumeroUnico} importada`);
-      }
-    );
+    await importarRegistros(`select * from VC_Cuenta where IdCliente=${idCliente}`, async cuenta => {
+      await crearCuenta({
+        NumeroUnico: cuenta.sNumeroUnico,
+        SaldoDisponible: cuenta.mSaldoDisponible,
+        SaldoDisponibleBase: cuenta.mSaldoDisponibleBase,
+        SaldoContable: cuenta.mSaldoContable,
+        SaldoContableBase: cuenta.mSaldoContableBase,
+        FechaApertura: cuenta.dFechaApertura,
+        FechaVigencia: cuenta.dFechaVigencia,
+        FechaExpiracion: cuenta.dFechaExpiracion,
+        Estado: cuenta.sEstado,
+        IdCliente: { IdClaveForanea: cuenta.IdCliente },
+        IdNegocio: { IdClaveForanea: cuenta.IdNegocio }
+      });
+      console.log(`Cuenta ${cuenta.sNumeroUnico} importada`);
+    });
   } catch (ex) {
     console.log(`Error en la importación de cuentas: ${ex.message}`);
     throw ex;
@@ -488,7 +490,7 @@ const importarCuentas = async idCliente => {
 const importarCalificacionNegocio = async idCliente => {
   try {
     await importarRegistros(
-      `select * from VINCO.VC_ClienteNegocioCalificacion where IdCliente=${idCliente}`,
+      `select * from VC_ClienteNegocioCalificacion where IdCliente=${idCliente}`,
       async calificacion => {
         await crearCalificacionNegocio({
           Rating: calificacion.iCalificacion,
@@ -507,7 +509,7 @@ const importarCalificacionNegocio = async idCliente => {
 
 const importarClienteNegocio = async idCliente => {
   try {
-    await importarRegistros(`select * from VINCO.VC_ClienteNegocio where IdCliente=${idCliente};`, async negocio => {
+    await importarRegistros(`select * from VC_ClienteNegocio where IdCliente=${idCliente};`, async negocio => {
       await crearClienteNegocio({
         FechaCreacion: negocio.dFechaCreacion,
         IdCliente: { IdClaveForanea: negocio.IdCliente },
@@ -524,7 +526,7 @@ const importarClienteNegocio = async idCliente => {
 const importarLogNotificacionCliente = async idCliente => {
   try {
     await importarRegistros(
-      `select * from VINCO.VC_LogNotificacionCliente where IdCliente=${idCliente};`,
+      `select * from VC_LogNotificacionCliente where IdCliente=${idCliente};`,
       async notificacion => {
         await registrarLogNotificacionCliente({
           Titulo: notificacion.sTitulo,
@@ -565,11 +567,11 @@ const importarPartidas = async idCliente => {
       P.sNumeroUnico,
       J.IdCampania,
       C.IdNegocio
-      from VINCO.VC_Partida P 
-      inner join VINCO.VC_Juego J on J.IdJuego=P.IdJuego
-      inner join VINCO.VC_Campania C on C.IdCampania=J.IdCampania
-      inner join VINCO.VC_MovPartida M on M.IdPartida=P.IdPartida
-      inner join VINCO.VC_Evento E on E.IdEvento=M.IdEvento 
+      from VC_Partida P 
+      inner join VC_Juego J on J.IdJuego=P.IdJuego
+      inner join VC_Campania C on C.IdCampania=J.IdCampania
+      inner join VC_MovPartida M on M.IdPartida=P.IdPartida
+      inner join VC_Evento E on E.IdEvento=M.IdEvento 
           and E.sEstado='A' 
       and P.IdCliente=${idCliente}`,
       async partida => {
@@ -599,7 +601,7 @@ const importarPartidas = async idCliente => {
 };
 
 const importarRegistros = async (query, importacion) => {
-  let resultados = await consultarRDS("VINCO", query);
+  let resultados = await consultarRDS(DATABASE_NAME, query);
   resultados = JSON.parse(resultados.Payload);
   if (resultados.length > 0) {
     for (let i = 0; i < resultados.length; i++) {
