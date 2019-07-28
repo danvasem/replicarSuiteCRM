@@ -17,7 +17,15 @@ const DATABASE_NAME = process.env.VINCO_DATABASE_NAME;
 
 exports.lambdaHandler = async (event, context) => {
   try {
-    await ejecutarImportacion(event.IdCliente);
+    if (event.IdCliente > 0) {
+      await ejecutarImportacion(event.IdCliente);
+    } else {
+      switch (event.IdCliente) {
+        case -990:
+          await ejecutarImportacionVincardsSinCliente(event.IdNegocio);
+          break;
+      }
+    }
     return true;
   } catch (ex) {
     console.log("Error en la ejecución de la migración: " + ex.message);
@@ -59,9 +67,30 @@ const ejecutarImportacion = async idCliente => {
   }
 };
 
+const ejecutarImportacionVincardsSinCliente = async idNegocio => {
+  try {
+    await importarRegistros(
+      `select * from VC_CodigoCliente where IdCliente is null and IdNegocio=${idNegocio};`,
+      async vincard => {
+        console.log(`Vincard: ${vincard.sCodigo}`);
+        await crearCodigoCliente({
+          Codigo: vincard.sCodigo,
+          FechaCreacion: vincard.dFechaCreacion,
+          Estado: vincard.sEstado,
+          IdLocal: { IdClaveForanea: vincard.IdLocal },
+          IdNegocio: { IdClaveForanea: vincard.IdNegocio }
+        });
+      }
+    );
+  } catch (ex) {
+    console.log(`Error en la importación de Vincards sin Clientes: ${ex.message}`);
+    throw ex;
+  }
+};
+
 const consultarRDS = async (database, query) => {
   const params = {
-    FunctionName: "VP-ConsultarRDSFunction-NOP0PKLIF0FB",
+    FunctionName: process.env.LAMBDA_FUNCTION_CONSULTARRDS,
     Payload: JSON.stringify({
       database: database,
       query: query
@@ -225,9 +254,9 @@ const importarAfiliaciones = async idCliente => {
       sum(M.mValorCuenta)  as SaldoCuenta,
       sum(M.mValor) as AvancePartida
       from VC_Evento E
-      inner join VC_MovPartida M on M.IdEvento=E.IdEvento
-      inner join VC_Partida P on P.IdPartida=M.IdPartida
-      inner join VC_Juego J on J.IdJuego=P.IdJuego
+      left outer join VC_MovPartida M on M.IdEvento=E.IdEvento
+      left outer join VC_Partida P on P.IdPartida=M.IdPartida
+      left outer join VC_Juego J on J.IdJuego=P.IdJuego
       where E.IdTipoevento=3
       and E.sEstado='A'
       and E.IdCliente=${idCliente}
